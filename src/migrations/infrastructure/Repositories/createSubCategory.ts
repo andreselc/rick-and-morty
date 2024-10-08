@@ -1,6 +1,8 @@
 import { IRespository } from "src/migrations/domain/IRepository";
 import { PrismaClient } from "@prisma/client";
 import axios from 'axios';
+import { GetAllCharactersAdapter } from "../adapters/getAllCharactersAdapter";
+import { GetAllCharactersApplication } from "src/migrations/application/getAllCharacters.application";
 
 export class createSubCategory implements IRespository<PrismaClient> {
 
@@ -49,12 +51,14 @@ export class createSubCategory implements IRespository<PrismaClient> {
             const charactersResponse = await axios.get('https://rickandmortyapi.com/api/character');
 
             // Inserción de datos en sub_Category para especies
-            const characters = await this.getAllCharacters();
-            for (const character of characters) {
-                const speciesName = character.species;
-                console.log(speciesName);
-
+            const charactersService = new GetAllCharactersApplication(new GetAllCharactersAdapter());
+            let charactersArray: any[] = await charactersService.getAllCharacters();
+            
+            for (let i = 0; i < charactersArray.length; i++) {
+                const speciesName = charactersArray[i].species;
+                console.log(charactersArray[i].species);
                 
+
                 // Verificar si la especie ya existe en la base de datos
                 const existingSpecies = await prisma.sub_Category.findFirst({
                     where: { name: speciesName, category_id: speciesCharacter.id },
@@ -72,7 +76,7 @@ export class createSubCategory implements IRespository<PrismaClient> {
     }
 
     // Función para obtener todos los personajes manejando la paginación
-    private async getAllCharacters(): Promise<any[]> {
+    /*private async getAllCharacters(): Promise<any[]> {
         let characters: any[] = [];
         let nextUrl = 'https://rickandmortyapi.com/api/character';
 
@@ -83,6 +87,6 @@ export class createSubCategory implements IRespository<PrismaClient> {
         }
 
         return characters;
-    }
+    }*/
 
 }
