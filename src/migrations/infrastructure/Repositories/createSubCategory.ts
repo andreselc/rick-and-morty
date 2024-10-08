@@ -23,7 +23,6 @@ export class createSubCategory implements IRespository<PrismaClient> {
         const subCategoryCount = await prisma.sub_Category.count();
 
         //Se obtiene el atributo para sacar su ID.
-        if (subCategoryCount === 0) {
             const speciesCharacter = await prisma.category.findFirst({
                 where: { name: 'species' },
             });
@@ -49,7 +48,5 @@ export class createSubCategory implements IRespository<PrismaClient> {
                     });
                 }   
             }   
-
-        }
     }
 }

@@ -16,7 +16,7 @@ export class CharacterRepository implements IRespository<PrismaClient> {
             let charactersArray: any[] = await charactersService.getAllCharacters();
             for (let i = 0; i < charactersArray.length; i++) {
                 const characterSpecie = await prisma.sub_Category.findFirst({
-                    where: { name : charactersArray[i].species.name },
+                    where: { name : charactersArray[i].species},
                 });
 
                 let statusCharacter: any = {};

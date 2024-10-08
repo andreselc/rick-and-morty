@@ -38,13 +38,6 @@ export class SaveAllEpisodesAdapter implements SaveAllEpisodesPort {
                         where: { name: seasonName },
                     });
 
-                    // Si la temporada no existe, crearla
-                    if (!season) {
-                        season = await this.prisma.sub_Category.create({
-                            data: { name: seasonName, category_id: 1 }, // Asegúrate de usar el ID correcto para category_id
-                        });
-                    }
-
                     // Mapear el estado del episodio
                     let statusMapeado: string;
                     if (episode.status === "Alive") {
@@ -54,8 +47,15 @@ export class SaveAllEpisodesAdapter implements SaveAllEpisodesPort {
                     }
 
                     // Obtener el estado del episodio
+                    const type_status = await this.prisma.status_Types.findFirst({
+                        where: { name_type: "episodes" },
+                    });
+
+                    // Obtener el estado del episodio
                     const status = await this.prisma.status.findFirst({
-                        where: { name: statusMapeado },
+                        where: { name: statusMapeado, 
+                                status_type_id: type_status.id
+                        },
                     });
 
                     // Verificar que tanto la temporada como el estado existan antes de insertar el episodio

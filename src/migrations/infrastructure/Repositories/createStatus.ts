@@ -22,8 +22,8 @@ export class createStatus implements IRespository<PrismaClient> {
             await prisma.status.createMany({
                 data: [
                 { status_type_id: statusTypeEpisode.id, name: 'active' },
-                { status_type_id: statusTypeEpisode.id, name: 'suspended' },
-                { status_type_id: statusTypeCharacter.id, name: 'cancelled' },
+                { status_type_id: statusTypeEpisode.id, name: 'cancelled' },
+                { status_type_id: statusTypeCharacter.id, name: 'suspended' },
                 { status_type_id: statusTypeCharacter.id, name: 'active' },
                 ],
             });
