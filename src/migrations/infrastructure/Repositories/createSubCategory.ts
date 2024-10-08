@@ -29,12 +29,20 @@ export class createSubCategory implements IRespository<PrismaClient> {
             //Procesar episodios para obtener todas las temporadas:
 
             const seasons = new Set<string>();
-            episodes.forEach((episode: any) => {
-                const seasonCode = episode.episode.split('E')[0]; // Obtener la temporada del campo 'episode'
-                const seasonNumber = parseInt(seasonCode.replace('S', ''), 10); // Extraer el número de la temporada
-                const seasonName = `Season ${seasonNumber}`; // Formatear el nombre de la temporada
-                seasons.add(seasonName);
-            });
+            const episodesResponsePages= episodesResponse.data.info.pages;
+            console.log(episodesResponsePages);
+
+            for (let i = 0; i < episodesResponsePages; i++) {
+                const episodesResponse = await axios.get(`https://rickandmortyapi.com/api/episode?page=${i}`);
+                const episodes = episodesResponse.data.results;
+
+                episodes.forEach((episode: any) => {
+                    const seasonCode = episode.episode.split('E')[0]; // Obtener la temporada del campo 'episode'
+                    const seasonNumber = parseInt(seasonCode.replace('S', ''), 10); // Extraer el número de la temporada
+                    const seasonName = `Season ${seasonNumber}`; // Formatear el nombre de la temporada
+                    seasons.add(seasonName);
+                });
+            }
 
             // Inserción de datos en sub_Category para temporadas
             for (const season of seasons) {
