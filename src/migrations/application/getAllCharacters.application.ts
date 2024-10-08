@@ -1,4 +1,4 @@
-import { GetAllCharactersPort } from "../domain/ports/getAllCharactersPort";
+import { GetAllCharactersPort } from "../../characters/domain/ports/getAllCharactersPort";
 
 export class GetAllCharactersApplication implements GetAllCharactersPort {
     adapter: GetAllCharactersPort;

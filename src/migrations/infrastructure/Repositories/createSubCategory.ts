@@ -1,7 +1,7 @@
 import { IRespository } from "src/migrations/domain/IRepository";
 import { PrismaClient } from "@prisma/client";
 import axios from 'axios';
-import { GetAllCharactersAdapter } from "../adapters/getAllCharactersAdapter";
+import { GetAllCharactersAdapter } from "../../../characters/infrastructure/adapters/getAllCharactersAdapter";
 import { GetAllCharactersApplication } from "src/migrations/application/getAllCharacters.application";
 
 export class createSubCategory implements IRespository<PrismaClient> {
@@ -56,8 +56,6 @@ export class createSubCategory implements IRespository<PrismaClient> {
             
             for (let i = 0; i < charactersArray.length; i++) {
                 const speciesName = charactersArray[i].species;
-                console.log(charactersArray[i].species);
-
 
                 // Verificar si la especie ya existe en la base de datos
                 const existingSpecies = await prisma.sub_Category.findFirst({

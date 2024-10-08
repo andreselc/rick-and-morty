@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { GetAllCharactersPort } from 'src/migrations/domain/ports/getAllCharactersPort';
+import { GetAllCharactersPort } from 'src/characters/domain/ports/getAllCharactersPort';
 
 export class GetAllCharactersAdapter implements GetAllCharactersPort {
 
