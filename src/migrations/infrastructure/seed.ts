@@ -21,14 +21,16 @@ export class Seed {
 
   async seed() {
 
-    this.statusType.create(this.prisma);
+    try {
+        await this.statusType.create(this.prisma);
+        await this.status.create(this.prisma);
+        await this.categories.create(this.prisma);
+        await this.subCategory.create(this.prisma);
+        console.log('Todos los métodos ejecutados exitosamente');
+    } catch (error) {
+        console.error('Error durante el seeding:', error);
+    }
 
-    this.status.create(this.prisma);
-
-    this.categories.create(this.prisma);
-    
-    this.subCategory.create(this.prisma);
-    
     
     console.log('Proceso seeding completado');
   }
