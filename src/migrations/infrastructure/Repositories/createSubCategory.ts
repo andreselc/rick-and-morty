@@ -32,7 +32,7 @@ export class createSubCategory implements IRespository<PrismaClient> {
             const episodesResponsePages= episodesResponse.data.info.pages;
             console.log(episodesResponsePages);
 
-            for (let i = 0; i < episodesResponsePages; i++) {
+            for (let i = 1; i <= episodesResponsePages; i++) {
                 const episodesResponse = await axios.get(`https://rickandmortyapi.com/api/episode?page=${i}`);
                 const episodes = episodesResponse.data.results;
 
