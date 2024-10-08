@@ -7,13 +7,15 @@ import { createCategory } from "./migrations/infrastructure/Repositories/createC
 import { createStatus } from "./migrations/infrastructure/Repositories/createStatus";
 import { createStatusType } from "./migrations/infrastructure/Repositories/createStatusType";
 import { createSubCategory } from "./migrations/infrastructure/Repositories/createSubCategory";
+import { CharacterRepository } from "./characters/infrastructure/Repositories/characterRepository";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const seeder = new Seed(new createCategory(),
   new createStatus(),
   new createStatusType(),
-  new createSubCategory());
+  new createSubCategory(),
+  new CharacterRepository);
 
   await seeder.seed();
 

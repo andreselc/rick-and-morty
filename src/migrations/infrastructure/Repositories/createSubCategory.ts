@@ -2,7 +2,7 @@ import { IRespository } from "src/migrations/domain/IRepository";
 import { PrismaClient } from "@prisma/client";
 import axios from 'axios';
 import { GetAllCharactersAdapter } from "../../../characters/infrastructure/adapters/getAllCharactersAdapter";
-import { GetAllCharactersApplication } from "src/migrations/application/getAllCharacters.application";
+import { GetAllCharactersApplication } from "src/characters/application/getAllCharacters.application";
 
 export class createSubCategory implements IRespository<PrismaClient> {
 
@@ -47,8 +47,6 @@ export class createSubCategory implements IRespository<PrismaClient> {
                 data: { name: season, category_id: seasonEpisode.id },
                 });
             }
-
-            const charactersResponse = await axios.get('https://rickandmortyapi.com/api/character');
 
             // Inserción de datos en sub_Category para especies
             const charactersService = new GetAllCharactersApplication(new GetAllCharactersAdapter());

@@ -11,22 +11,22 @@ export class createStatus implements IRespository<PrismaClient> {
 
     //Se obtiene el atributo para sacar su ID.
     if (statusCount === 0) {
-        const statusTypeCharacter = await prisma.status_Types.findFirst({
-            where: { name_type: 'characters' },
-        });
-        const statusTypeEpisode = await prisma.status_Types.findFirst({
-            where: { name_type : 'episodes' },
-        });
+            const statusTypeCharacter = await prisma.status_Types.findFirst({
+                where: { name_type: 'characters' },
+            });
+            const statusTypeEpisode = await prisma.status_Types.findFirst({
+                where: { name_type : 'episodes' },
+            });
 
-        //Inserción de datos en Status
-        await prisma.status.createMany({
-            data: [
-            { status_type_id: statusTypeEpisode.id, name: 'active' },
-            { status_type_id: statusTypeEpisode.id, name: 'suspended' },
-            { status_type_id: statusTypeCharacter.id, name: 'cancelled' },
-            { status_type_id: statusTypeCharacter.id, name: 'active' },
-            ],
-        });
+            //Inserción de datos en Status
+            await prisma.status.createMany({
+                data: [
+                { status_type_id: statusTypeEpisode.id, name: 'active' },
+                { status_type_id: statusTypeEpisode.id, name: 'suspended' },
+                { status_type_id: statusTypeCharacter.id, name: 'cancelled' },
+                { status_type_id: statusTypeCharacter.id, name: 'active' },
+                ],
+            });
         }
     }
 
