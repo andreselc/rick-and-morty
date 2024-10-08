@@ -1,7 +1,7 @@
 import { PrismaClient} from "@prisma/client";
+import { SaveAllEpisodesApplication } from "src/episodes/application/saveAllEpisodes.application";
 import { IRespository } from "src/migrations/domain/IRepository";
-import { SaveAllSeasonsAdapter } from "../adapters/saveAllSeasonsAdapter";
-import { SaveAllSeasonsApplication } from "src/episodes/application/saveAllSeasons.application";
+import { SaveAllEpisodesAdapter } from "../adapters/saveAllEpisodesAdapter";
 
 export class EpisodesRepository implements IRespository<PrismaClient> {
 
@@ -9,11 +9,11 @@ export class EpisodesRepository implements IRespository<PrismaClient> {
 
         //Inserción de los episodios
         //Primero, se verifica si hay episodios en base de datos
-        const episodesCount = await prisma.character.count();
+        const episodesCount = await prisma.episode.count();
         if (episodesCount === 0) {
-            const episodesService = new SaveAllSeasonsApplication(new SaveAllSeasonsAdapter(prisma));
-            await episodesService.saveAllSeasons();
-                
+            const episodesService = new SaveAllEpisodesApplication(new SaveAllEpisodesAdapter(prisma));
+            await episodesService.saveAllEpisodes();   
+            
         }
     }      
 }
