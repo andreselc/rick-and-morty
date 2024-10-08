@@ -1,4 +1,4 @@
-import { PrismaClient, Status } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 import { GetAllCharactersApplication } from "src/characters/application/getAllCharacters.application";
 import { IRespository } from "src/migrations/domain/IRepository";
 import { GetAllCharactersAdapter } from "../adapters/getAllCharactersAdapter";
@@ -16,7 +16,7 @@ export class CharacterRepository implements IRespository<PrismaClient> {
             let charactersArray: any[] = await charactersService.getAllCharacters();
             for (let i = 0; i < charactersArray.length; i++) {
                 const characterSpecie = await prisma.sub_Category.findFirst({
-                    where: { name : charactersArray[i].species },
+                    where: { name : charactersArray[i].species.name },
                 });
 
                 let statusCharacter: any = {};
@@ -30,7 +30,7 @@ export class CharacterRepository implements IRespository<PrismaClient> {
                         where: { name: "suspended" },
                     });
                 }
-                
+
                 if (characterSpecie && statusCharacter) {
                     await prisma.character.create({
                         data: {
