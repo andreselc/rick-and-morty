@@ -3,10 +3,17 @@ import { NestFactory } from "@nestjs/core";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import { AppModule } from "./app.module";
 import { Seed } from "./migrations/infrastructure/seed";
+import { createCategory } from "./migrations/infrastructure/Repositories/createCategory";
+import { createStatus } from "./migrations/infrastructure/Repositories/createStatus";
+import { createStatusType } from "./migrations/infrastructure/Repositories/createStatusType";
+import { createSubCategory } from "./migrations/infrastructure/Repositories/createSubCategory";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  const seeder = new Seed();
+  const seeder = new Seed(new createCategory(),
+  new createStatus(),
+  new createStatusType(),
+  new createSubCategory());
 
   await seeder.seed();
 

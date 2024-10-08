@@ -1,22 +1,24 @@
 import { PrismaClient } from "@prisma/client";
-import { createCategory } from "./Repositories/createCategory";
-import { createStatus } from "./Repositories/createStatus";
-import { createStatusType } from "./Repositories/createStatusType";
-import { createSubCategory } from "./Repositories/createSubCategory";
+import { IRespository } from "../domain/IRepository";
 
 export class Seed {    
     private prisma: PrismaClient;
-    private categories: createCategory;
-    private status: createStatus;
-    private statusType: createStatusType;
-    private subCategory: createSubCategory;
+    private categories: IRespository<PrismaClient>;
+    private status: IRespository<PrismaClient>;
+    private statusType: IRespository<PrismaClient>;
+    private subCategory: IRespository<PrismaClient>;
     
-    constructor() {
+    constructor(
+      categories: IRespository<PrismaClient>,
+      status: IRespository<PrismaClient>,
+      statusType: IRespository<PrismaClient>,
+      subCategory: IRespository<PrismaClient>
+    ) {
       this.prisma = new PrismaClient();
-      this.categories = new createCategory();
-      this.status = new createStatus();
-      this.statusType = new createStatusType();
-      this.subCategory = new createSubCategory();
+      this.categories = categories;
+      this.status = status;
+      this.statusType = statusType;
+      this.subCategory = subCategory;
     }
 
   async seed() {
