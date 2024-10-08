@@ -23,14 +23,10 @@ export class createSubCategory implements IRespository<PrismaClient> {
             const charactersResponse = await axios.get('https://rickandmortyapi.com/api/character');
             const episodesResponse = await axios.get('https://rickandmortyapi.com/api/episode');
 
-            const characters = charactersResponse.data.results;
-            const episodes = episodesResponse.data.results;
-
             //Procesar episodios para obtener todas las temporadas:
 
             const seasons = new Set<string>();
             const episodesResponsePages= episodesResponse.data.info.pages;
-            console.log(episodesResponsePages);
 
             for (let i = 1; i <= episodesResponsePages; i++) {
                 const episodesResponse = await axios.get(`https://rickandmortyapi.com/api/episode?page=${i}`);
@@ -49,6 +45,24 @@ export class createSubCategory implements IRespository<PrismaClient> {
                 await prisma.sub_Category.create({
                 data: { name: season, category_id: seasonEpisode.id },
                 });
+            }
+
+            // Inserción de datos en sub_Category para especies
+            const characterResponseSpecies= charactersResponse.data.results;
+            for (const character of characterResponseSpecies) {
+                const speciesName = character.species === 'Human' ? 'Human' : 'Humanoid';
+                
+                // Verificar si la especie ya existe en la base de datos
+                const existingSpecies = await prisma.sub_Category.findFirst({
+                    where: { name: speciesName, category_id: speciesCharacter.id },
+                });
+
+                // Si la especie no existe, agregarla
+                if (!existingSpecies) {
+                    await prisma.sub_Category.create({
+                        data: { name: speciesName, category_id: speciesCharacter.id },
+                    });
+                }
             }
 
         }
