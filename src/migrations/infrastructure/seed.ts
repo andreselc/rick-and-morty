@@ -51,17 +51,22 @@ export class Seed {
       });
     }
 
-    // Inserción de datos en Category
-    const speciesCategory = await this.prisma.category.create({
-        data: { name: 'species' },
-    });
-  
-    const seasonCategory = await this.prisma.category.create({
-        data: { name: 'season' },
-    });
+    //Inserción de datos en categoría
 
-  
+    //Ahora, se debe verificar si existen datos dentro de la tabla Categoría
+    const categoryCount = await this.prisma.category.count();
+
+    if (categoryCount === 0) {
+         //Se insertan los datos en la tabla
+         await this.prisma.category.create({
+            data: { name: 'species' },
+        });
     
+        await this.prisma.category.create({
+            data: { name : 'season' },
+        });
+    }
+
     console.log('Proceso seeding completado');
   }
 
