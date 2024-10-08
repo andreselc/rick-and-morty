@@ -54,10 +54,13 @@ export class SaveAllEpisodesAdapter implements SaveAllEpisodesPort {
 
                     // Obtener el estado del episodio
                     const status = await this.prisma.status.findFirst({
-                        where: { name: statusMapeado, 
-                                status_type_id: type_status.id
+                        where: { 
+                            name: statusMapeado, 
+                            status_type_id: type_status.id,
                         },
                     });
+
+                    
 
                     // Verificar que tanto la temporada como el estado existan antes de insertar el episodio
                     if (season && status) {

@@ -9,6 +9,7 @@ import { createStatusType } from "./migrations/infrastructure/Repositories/creat
 import { createSubCategory } from "./migrations/infrastructure/Repositories/createSubCategory";
 import { CharacterRepository } from "./characters/infrastructure/Repositories/characterRepository";
 import { EpisodesRepository } from "./episodes/infrastructure/Repositories/episodesRepository";
+import { createCharactersInEpisodes } from "./migrations/infrastructure/Repositories/createCharactersInEpisodes";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -17,7 +18,8 @@ async function bootstrap() {
   new createStatusType(),
   new createSubCategory(),
   new CharacterRepository(),
-  new EpisodesRepository());
+  new EpisodesRepository(),
+  new createCharactersInEpisodes());
 
   await seeder.seed();
 

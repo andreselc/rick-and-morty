@@ -9,6 +9,7 @@ export class Seed {
     private subCategory: IRespository<PrismaClient>;
     private charactersApi: IRespository<PrismaClient>;
     private episodesApi: IRespository<PrismaClient>;
+    private charactersInEpisode: IRespository<PrismaClient>;
  
     constructor(
       categories: IRespository<PrismaClient>,
@@ -16,7 +17,8 @@ export class Seed {
       statusType: IRespository<PrismaClient>,
       subCategory: IRespository<PrismaClient>,
       charactersApi: IRespository<PrismaClient>,
-      episodesApi:IRespository<PrismaClient>
+      episodesApi:IRespository<PrismaClient>,
+      charactersInEpisode: IRespository<PrismaClient>
     ) {
       this.prisma = new PrismaClient();
       this.categories = categories;
@@ -25,6 +27,7 @@ export class Seed {
       this.subCategory = subCategory;
       this.charactersApi = charactersApi;
       this.episodesApi = episodesApi;
+      this.charactersInEpisode = charactersInEpisode;
     }
 
   async seed() {
@@ -36,6 +39,7 @@ export class Seed {
         await this.subCategory.create(this.prisma);
         await this.charactersApi.create(this.prisma);
         await this.episodesApi.create(this.prisma);
+        await this.charactersInEpisode.create(this.prisma);
        
 
         console.log('Todos los métodos ejecutados exitosamente');
