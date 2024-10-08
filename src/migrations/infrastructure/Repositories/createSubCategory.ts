@@ -12,10 +12,10 @@ export class createSubCategory implements IRespository<PrismaClient> {
 
         //Se obtiene el atributo para sacar su ID.
         if (subCategoryCount === 0) {
-            const speciesCharacter = await prisma.sub_Category.findFirst({
+            const speciesCharacter = await prisma.category.findFirst({
                 where: { name: 'species' },
             });
-            const seasonEpisode = await prisma.sub_Category.findFirst({
+            const seasonEpisode = await prisma.category.findFirst({
                 where: { name : 'season' },
             });
 

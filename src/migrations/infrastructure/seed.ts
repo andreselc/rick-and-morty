@@ -31,7 +31,6 @@ export class Seed {
         console.error('Error durante el seeding:', error);
     }
 
-    
     console.log('Proceso seeding completado');
   }
 
