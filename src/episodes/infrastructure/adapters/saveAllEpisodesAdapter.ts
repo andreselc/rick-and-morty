@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import axios from 'axios';
 import { SaveAllEpisodesPort } from 'src/episodes/domain/ports/saveAllEpisodes.Port';
+import { DurationFormatter } from 'src/episodes/domain/duration';
 
 export class SaveAllEpisodesAdapter implements SaveAllEpisodesPort {
 
@@ -60,10 +61,11 @@ export class SaveAllEpisodesAdapter implements SaveAllEpisodesPort {
 
                     // Verificar que tanto la temporada como el estado existan antes de insertar el episodio
                     if (season && status) {
+                        const duration = DurationFormatter.formatDuration();
                         await this.prisma.episode.create({
                             data: {
                                 name: episode.name,
-                                duration: "1",
+                                duration: duration,
                                 sub_category_id: season.id,
                                 status_id: status.id,
                             },
