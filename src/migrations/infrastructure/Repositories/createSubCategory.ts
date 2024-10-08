@@ -20,7 +20,6 @@ export class createSubCategory implements IRespository<PrismaClient> {
             });
 
             // Llamar a un endpoint para obtener datos de las temporadas y especies de personajes
-            const charactersResponse = await axios.get('https://rickandmortyapi.com/api/character');
             const episodesResponse = await axios.get('https://rickandmortyapi.com/api/episode');
 
             //Procesar episodios para obtener todas las temporadas:
@@ -47,10 +46,14 @@ export class createSubCategory implements IRespository<PrismaClient> {
                 });
             }
 
+            const charactersResponse = await axios.get('https://rickandmortyapi.com/api/character');
+
             // Inserción de datos en sub_Category para especies
-            const characterResponseSpecies= charactersResponse.data.results;
-            for (const character of characterResponseSpecies) {
-                const speciesName = character.species === 'Human' ? 'Human' : 'Humanoid';
+            const characters = await this.getAllCharacters();
+            for (const character of characters) {
+                const speciesName = character.species;
+                console.log(speciesName);
+
                 
                 // Verificar si la especie ya existe en la base de datos
                 const existingSpecies = await prisma.sub_Category.findFirst({
@@ -66,6 +69,20 @@ export class createSubCategory implements IRespository<PrismaClient> {
             }
 
         }
+    }
+
+    // Función para obtener todos los personajes manejando la paginación
+    private async getAllCharacters(): Promise<any[]> {
+        let characters: any[] = [];
+        let nextUrl = 'https://rickandmortyapi.com/api/character';
+
+        while (nextUrl) {
+            const response = await axios.get(nextUrl);
+            characters = characters.concat(response.data.results);
+            nextUrl = response.data.info.next;
+        }
+
+        return characters;
     }
 
 }
