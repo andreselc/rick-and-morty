@@ -12,3 +12,65 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model status_Types {
+  id Int @id @default(autoincrement())
+  name_type String
+  status Status[]
+}
+
+model Status {
+  id Int @id @default(autoincrement())
+  name String
+  status_type_id Int
+  status_type status_Types @relation(fields: [status_type_id], references: [id])
+  episode Episode[]
+  character Character[]
+}
+
+model Category {
+  id Int      @id @default(autoincrement())
+  name String
+  sub_category sub_Category[]
+}
+
+model sub_Category {
+  id Int      @id @default(autoincrement())
+  name String
+  category_id Int
+  category Category @relation(fields: [category_id], references: [id])
+  episode Episode[]
+  character Character[]
+}
+
+model Episode {
+  id Int      @id @default(autoincrement())
+  name String
+  duration String //Representará la duración de un episodioen minutos y segundos
+  sub_category_id Int
+  sub_category sub_Category @relation(fields: [sub_category_id], references: [id])
+  status_id Int
+  status Status @relation(fields: [status_id], references: [id])
+  characters EpisodeCharacter[]
+}
+
+model Character {
+  id Int      @id @default(autoincrement())
+  name String
+  sub_category_id Int
+  sub_category sub_Category @relation(fields: [sub_category_id], references: [id])
+  status_id Int
+  status Status @relation(fields: [status_id], references: [id])
+  episodes EpisodeCharacter[]
+}
+
+model EpisodeCharacter {
+  id_time Int @default(autoincrement())
+  episode_id  Int
+  character_id Int
+  time_init String  // Representa el tiempo de inicio en formato "mm:ss"
+  time_finished  String  // Representa el tiempo de finalización en formato "mm:ss"
+  episode    Episode  @relation(fields: [episode_id], references: [id])
+  character  Character @relation(fields: [character_id], references: [id])
+  @@id([episode_id, character_id, id_time])
+}
