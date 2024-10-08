@@ -57,7 +57,7 @@ export class createSubCategory implements IRespository<PrismaClient> {
             for (let i = 0; i < charactersArray.length; i++) {
                 const speciesName = charactersArray[i].species;
                 console.log(charactersArray[i].species);
-                
+
 
                 // Verificar si la especie ya existe en la base de datos
                 const existingSpecies = await prisma.sub_Category.findFirst({
@@ -74,19 +74,5 @@ export class createSubCategory implements IRespository<PrismaClient> {
 
         }
     }
-
-    // Función para obtener todos los personajes manejando la paginación
-    /*private async getAllCharacters(): Promise<any[]> {
-        let characters: any[] = [];
-        let nextUrl = 'https://rickandmortyapi.com/api/character';
-
-        while (nextUrl) {
-            const response = await axios.get(nextUrl);
-            characters = characters.concat(response.data.results);
-            nextUrl = response.data.info.next;
-        }
-
-        return characters;
-    }*/
 
 }
