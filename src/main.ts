@@ -18,7 +18,7 @@ async function bootstrap() {
 
   const config = new DocumentBuilder()
     .setTitle("API Rick y Morty")
-    .setDescription("Esta API servirá como ejemplo para crear un simple CRUD de Rick y Morty")
+    .setDescription("Esta API servirá para gestionar a los personajes y episodios de Rick y Morty")
     .setVersion("1.0")
     .addBearerAuth()
     .build();
