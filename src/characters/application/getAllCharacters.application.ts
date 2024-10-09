@@ -44,6 +44,10 @@ export class GetAllCharacters {
         offset=1;
     }
 
+    if (!page || page<=0) {
+        page=1;
+    }
+
     const characters = await this.prisma.character.findMany({
       where,
       skip: offset,
@@ -96,13 +100,17 @@ export class GetAllCharacters {
       })
     );
 
-    const nextPage = page < totalPages ? page + 1 : null;
-    const prevPage = page > 1 ? page - 1 : null;
+    const baseUrl = 'http://localhost:3000/api/characters/getAllCharacters';
+
+    const nextPage = page < totalPages ? `${baseUrl}?page=${page + 1}` : null;
+    const prevPage = page > 1 ? `${baseUrl}?page=${page - 1}` : null;
 
     return {
       info: {
         count: totalCharacters,
         pages: totalPages,
+        next: nextPage,
+        prev: prevPage,
       },
       results: characterDtos,
     };
