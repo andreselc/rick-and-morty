@@ -12,6 +12,9 @@ import { GetCharacterById } from '../application/getCharacterById.application';
 import { CreateCharacterDto } from '../application/Dtos/createCharacter.dto';
 import { CharacterDto } from '../application/Dtos/characterDto.dto';
 import { GetAllCharacters } from '../application/getAllCharacters.application';
+import { KillACharacter } from '../application/killACharacter.application';
+import { CharacterRepositoryMethods } from './Repositories/characterRepositoryMethods';
+import { PrismaClient } from '@prisma/client';
 
   
   //NOTA: Recuerda que Session es para manejar los cookies.
@@ -22,10 +25,13 @@ import { GetAllCharacters } from '../application/getAllCharacters.application';
 
   
    constructor (
-    private getCharacterById: GetCharacterById,
-    private characterDto: CharacterDto,
     private getAllCharacters: GetAllCharacters,
-   )  {}
+    private killACharacter: KillACharacter,
+    private charactersRepository: CharacterRepositoryMethods,
+   )  {
+    this.charactersRepository = new CharacterRepositoryMethods();
+    this.killACharacter = new KillACharacter(charactersRepository);
+   }
   
    @Post()
    addCharacter(){
@@ -45,8 +51,11 @@ import { GetAllCharacters } from '../application/getAllCharacters.application';
   }
   
    @Delete("suspendCharacter/:id")
-   suspendCharacter(@Param("id") id: string){
-    
+   suspendCharacter(@Param("id") id: number){
+    if (!this.killACharacter.execute(id)) {
+      throw new NotFoundException(`Character with ID ${id} not found`);
+    }
+    return `Character with ID ${id} has been suspended`;
    }
   
    @Patch ("/:id")

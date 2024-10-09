@@ -2,7 +2,7 @@ import { PrismaClient } from "@prisma/client";
 import { GetAllCharactersApplication } from "src/characters/application/getAllCharactersForMigration.application";
 import { IRespository } from "src/migrations/domain/IRepository";
 import { GetAllCharactersAdapter } from "../adapters/getAllCharactersAdapter";
-
+import { Injectable } from "@nestjs/common";
 
 export class CharacterRepository implements IRespository<PrismaClient> {
 

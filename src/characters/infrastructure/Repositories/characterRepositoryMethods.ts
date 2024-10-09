@@ -1,4 +1,4 @@
-import { NotFoundException } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { PrismaClient } from "@prisma/client";
 import { CharacterDto } from "src/characters/application/Dtos/characterDto.dto";
 import { UpdateCharacterDto } from "src/characters/application/Dtos/updateCharacter.dtos";
@@ -7,8 +7,8 @@ import { IRepositoryCharacter } from "src/characters/domain/ports/IRepositoryCha
 export class CharacterRepositoryMethods implements IRepositoryCharacter {
     prisma: PrismaClient;
 
-    constructor(prisma: PrismaClient) {
-        this.prisma = prisma;
+    constructor() {
+        this.prisma = new PrismaClient();
     }
 
     create(): void {
@@ -20,6 +20,8 @@ export class CharacterRepositoryMethods implements IRepositoryCharacter {
         const existingCharacter = await this.prisma.character.findUnique({
             where: { id: updateData.id },
         });
+
+        console.log("Tercer personaje: ", existingCharacter);	
 
         if (!existingCharacter) {
             throw new Error("Character not found.");
@@ -35,6 +37,7 @@ export class CharacterRepositoryMethods implements IRepositoryCharacter {
             });
         existingCharacter.status_id = status.id;
         }
+
         if(updateData.species){
             const species = await this.prisma.sub_Category.findFirst({
                 where: { name: updateData.species },
@@ -44,13 +47,11 @@ export class CharacterRepositoryMethods implements IRepositoryCharacter {
         if(updateData.episodes){
             const episodes = await this.prisma.episode.findMany({
                 where: { name: { in: updateData.episodes } },
-                });
-        
-        const { id, ...dataToUpdate } = existingCharacter;
+            });
 
         await this.prisma.character.update({
-            where: { id: updateData.id },
-            data: dataToUpdate,
+            where: { id: existingCharacter.id },
+            data: existingCharacter,
         });
     }
 }
