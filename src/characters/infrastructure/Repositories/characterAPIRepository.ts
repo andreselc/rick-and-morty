@@ -19,11 +19,17 @@ export class CharacterRepository implements IRespository<PrismaClient> {
                     where: { name : charactersArray[i].species},
                 });
 
+                const statusType =  await prisma.status_Types.findFirst({
+                    where: { name_type : "characters"},
+                });
+
                 let statusCharacter: any = {};
 
                 if (charactersArray[i].status === "Alive") {
                     statusCharacter = await prisma.status.findFirst({
-                        where: { name: "active" },
+                        where: { name: "active",
+                                status_type_id: statusType.id
+                        },
                     });
                 } else if (charactersArray[i].status === "Dead" || charactersArray[i].status === "unknown") {
                     statusCharacter = await prisma.status.findFirst({
