@@ -10,12 +10,33 @@ export class GetAllCharacters {
     const { type, species } = filters;
     const limit: number = 5
 
+    const checkSpecies = await this.prisma.sub_Category.findFirst({
+        where: { name: species },
+    });
+    
+    if(!checkSpecies){
+        throw new NotFoundException('Species not found');
+    }
+
     const where = {
       ...(type && { type }),
-      ...(species && { species }),
+      ...(species && { sub_category_id: checkSpecies.id }),
     };
 
     const totalCharacters = await this.prisma.character.count({ where });
+
+    if (totalCharacters === 0) {
+        return {
+          info: {
+            count: 0,
+            pages: 0,
+            next: null,
+            prev: null,
+          },
+          results: [],
+        };
+    }
+
     const totalPages = Math.ceil(totalCharacters / limit);
     let offset = (page - 1) * limit;
 
