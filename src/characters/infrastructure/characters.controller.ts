@@ -32,19 +32,6 @@ import { GetAllCharacters } from '../application/getAllCharacters.application';
   
    }
   
-   @Get("findCharacterById/:id")
-   async findCharacterById(@Param("id") id: number, @Query() query: any) : Promise<CharacterDto>{
-    try {
-      return await this.getCharacterById.findOne(id, this.characterDto);
-    } catch (error) {
-      if (error instanceof NotFoundException) {
-        throw new NotFoundException(error.message);
-      } else {
-        throw error;
-      }
-    }
-   }
-  
    @Get("getAllCharacters")
    @ApiQuery({ name: 'type', required: false, type: String })
    @ApiQuery({ name: 'species', required: false, type: String })
@@ -57,8 +44,9 @@ import { GetAllCharacters } from '../application/getAllCharacters.application';
     return this.getAllCharacters.getCharacters({ type, species }, page );
   }
   
-   @Delete("/:id")
-   removeUser(@Param("id") id: string){
+   @Delete("suspendCharacter/:id")
+   suspendCharacter(@Param("id") id: string){
+    
    }
   
    @Patch ("/:id")

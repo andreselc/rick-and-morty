@@ -7,7 +7,7 @@ import { createCategory } from "./migrations/infrastructure/Repositories/createC
 import { createStatus } from "./migrations/infrastructure/Repositories/createStatus";
 import { createStatusType } from "./migrations/infrastructure/Repositories/createStatusType";
 import { createSubCategory } from "./migrations/infrastructure/Repositories/createSubCategory";
-import { CharacterRepository } from "./characters/infrastructure/Repositories/characterRepository";
+import { CharacterRepository } from "./characters/infrastructure/Repositories/characterAPIRepository";
 import { EpisodesRepository } from "./episodes/infrastructure/Repositories/episodesRepository";
 import { createCharactersInEpisodes } from "./migrations/infrastructure/Repositories/createCharactersInEpisodes";
 
