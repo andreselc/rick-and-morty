@@ -77,12 +77,6 @@ export class CharactersController {
     }
   }
 
-  @Put("/:id")
-  updateUser() {
-   
-  }
-
-
   @Patch("updatePartially/:id")
   @UsePipes(new ValidationPipe ({ transform: true}))
   @HttpCode(200)
@@ -93,6 +87,14 @@ export class CharactersController {
 
         if (!character) {
           throw new NotFoundException('Character not found');
+        }
+
+        const statusValidation = await prisma.status.findFirst({
+          where: { name: body.status },
+        });
+  
+        if (!statusValidation) {
+          throw new NotFoundException('Status not found');
         }
 
         if (body.name) {
