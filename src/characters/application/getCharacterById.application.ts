@@ -27,11 +27,23 @@ export class GetCharacterById {
         const species = await this.prisma.sub_Category.findUnique({
             where: { id: currentCharacter.sub_category_id },
         });
-        
+
+        const episodes = await this.prisma.episodeCharacter.findMany({
+            where: { character_id: currentCharacter.id },
+        });
+
+        let episodesArray = []
+        if (episodes) {
+            episodes.forEach(episode => {
+                episodesArray.push(episode);
+            });
+        }
+
         characterDto.id = currentCharacter.id;
         characterDto.name = currentCharacter.name;
         characterDto.status = status.name;
         characterDto.species = species.name;
+        characterDto.episodes = episodesArray;
         return characterDto;
     }
 

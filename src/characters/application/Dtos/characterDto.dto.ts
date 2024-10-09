@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { Episode } from '@prisma/client';
 import { Expose } from 'class-transformer';
 
 @Injectable()
@@ -14,5 +15,8 @@ export class CharacterDto {
 
   @Expose()
   status: string;
+
+  @Expose()
+  episodes: Episode[];
   
 }
