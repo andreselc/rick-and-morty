@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Expose } from 'class-transformer';
-import { IsInt, IsOptional, IsString } from 'class-validator';
+import { IsOptional, IsString } from 'class-validator';
 
 @Injectable()
 export class CreateCharacterDto {
@@ -9,9 +9,10 @@ export class CreateCharacterDto {
   @Expose()
   name: string;
 
+  @IsOptional()
   @IsString()
   @Expose()
-  type: string;
+  type?: string;
 
   @IsString()
   @Expose()
