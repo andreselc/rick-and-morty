@@ -1,7 +1,9 @@
 export class UpdateCharacterDto {
+    id?: number;
     name?: string;
     type?: string;
-    status_id?: number;
+    status?: string;
     sub_category_id?: number;
+    species: string;
     episodes?: string[];
 }

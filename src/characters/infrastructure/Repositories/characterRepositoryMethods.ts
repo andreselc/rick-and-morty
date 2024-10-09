@@ -15,13 +15,11 @@ export class CharacterRepositoryMethods implements IRepositoryCharacter {
         throw new Error("Method not implemented.");
     }
 
-    async update(updateData: CharacterDto): Promise<void> {
+    async update(updateData: UpdateCharacterDto): Promise<void> {
         
         const existingCharacter = await this.prisma.character.findUnique({
             where: { id: updateData.id },
         });
-
-        console.log("Tercer personaje: ", existingCharacter);	
 
         if (!existingCharacter) {
             throw new Error("Character not found.");
@@ -44,16 +42,11 @@ export class CharacterRepositoryMethods implements IRepositoryCharacter {
             });
         existingCharacter.sub_category_id = species.id;
         }
-        if(updateData.episodes){
-            const episodes = await this.prisma.episode.findMany({
-                where: { name: { in: updateData.episodes } },
-            });
 
         await this.prisma.character.update({
             where: { id: existingCharacter.id },
             data: existingCharacter,
         });
-    }
 }
 
     async findById(id: number): Promise<CharacterDto> {
