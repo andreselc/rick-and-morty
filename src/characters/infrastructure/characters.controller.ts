@@ -1,75 +1,73 @@
-import { Body, 
-    Controller, 
-    Post, 
-    Get, 
-    Patch, 
-    Param, 
-    Query, 
-    Delete,
-    NotFoundException,
-    BadRequestException,
-    UsePipes,
-    ValidationPipe, } from '@nestjs/common';
-import { ApiQuery, ApiTags } from '@nestjs/swagger';
-import { GetCharacterById } from '../application/getCharacterById.application';
-import { CreateCharacterDto } from '../application/Dtos/createCharacter.dto';
-import { CharacterDto } from '../application/Dtos/characterDto.dto';
-import { GetAllCharacters } from '../application/getAllCharacters.application';
-import { KillACharacter } from '../application/killACharacter.application';
-import { CharacterRepositoryMethods } from './Repositories/characterRepositoryMethods';
+import { Controller, Post, Body, Res, HttpCode, Get, Query, Delete, Param, Patch, UsePipes, ValidationPipe, BadRequestException, NotFoundException } from '@nestjs/common';
+import { ApiTags, ApiQuery } from '@nestjs/swagger';
+import { Response } from 'express';
 import { PrismaClient } from '@prisma/client';
-import { find } from 'rxjs';
+import { GetAllCharacters } from './../../characters/application/getAllCharacters.application';
+import { KillACharacter } from './../../characters/application/killACharacter.application';
+import { CharacterRepositoryMethods } from '../../characters/infrastructure/Repositories/characterRepositoryMethods';
+import { CreateCharacterDto } from './../../characters/application/Dtos/createCharacter.dto';
+import { CharacterDto } from './../../characters/application/Dtos/characterDto.dto';
 
-  
-  //NOTA: Recuerda que Session es para manejar los cookies.
-  @Controller() //Recuerda que este es como un prefijo para nuestras rutas
-  
-  @ApiTags("Characters")
-  export class CharactersController {
+@Controller()
+@ApiTags("Characters")
+export class CharactersController {
 
-  
-   constructor (
+  constructor(
     private getAllCharacters: GetAllCharacters,
     private killACharacter: KillACharacter,
     private charactersRepository: CharacterRepositoryMethods,
-   )  {
+  ) {
     this.charactersRepository = new CharacterRepositoryMethods();
-    this.killACharacter = new KillACharacter(charactersRepository);
-   }
-  
-   @Post("addCharacter")
-   @UsePipes(new ValidationPipe({ transform: true }))
-   async addCharacter(@Body() body: CreateCharacterDto) {
-     try {
-       const prisma = new PrismaClient();
-       const speciesValidation = await prisma.sub_Category.findFirst({
-         where: { name: body.species },
-       });
- 
-       if (!speciesValidation) {
-         throw new NotFoundException('Species not found');
-       }
- 
-       const characterValidation = await prisma.character.findFirst({
-         where: { name: body.name, type: body.type, sub_category_id: speciesValidation.id },
-       });
- 
-       let key = -1;
-       if (characterValidation) {
-         key = characterValidation.id;
-       }
- 
-       const character = await this.charactersRepository.create(key, body);
-       return character;
-     } catch (error) {
-       throw new BadRequestException(`Something went wrong: ${error.message}`);
-     }
-   }
-  
-   @Get("getAllCharacters")
+    this.killACharacter = new KillACharacter(this.charactersRepository);
+  }
+
+  @Post("addCharacter")
+  @UsePipes(new ValidationPipe({ transform: true }))
+  @HttpCode(201)
+  async addCharacter(@Body() body: CreateCharacterDto, @Res() res: Response) {
+    try {
+      const prisma = new PrismaClient();
+      const speciesValidation = await prisma.sub_Category.findFirst({
+        where: { name: body.species },
+      });
+
+      if (!speciesValidation) {
+        throw new NotFoundException('Species not found');
+      }
+
+      const statusValidation = await prisma.status.findFirst({
+        where: { name: body.status },
+      });
+
+      if (!statusValidation) {
+        throw new NotFoundException('Status not found');
+      }
+
+      const characterValidation = await prisma.character.findFirst({
+        where: { name: body.name, type: body.type, sub_category_id: speciesValidation.id, status_id: statusValidation.id },
+      });
+
+      let key = -1;
+      if (characterValidation) {
+        key = characterValidation.id;
+      }
+
+      const character = await this.charactersRepository.create(key, body);;
+      return res.status(201).json({
+        statusCode: 201,
+        message: 'Character created successfully',
+        data: character,
+      });
+    } catch (error) {
+      throw new BadRequestException(`Something went wrong: ${error.message}`);
+    }
+  }
+
+  @Get("getAllCharacters")
    @ApiQuery({ name: 'type', required: false, type: String })
    @ApiQuery({ name: 'species', required: false, type: String })
    @ApiQuery({ name: 'page', required: false, type: Number })
+   @HttpCode(200)
    findAllCharacters(
     @Query('type') type?: string,
     @Query('species') species?: string,
@@ -77,16 +75,20 @@ import { find } from 'rxjs';
    ) :Promise<CharacterDto[]> {
     return this.getAllCharacters.getCharacters({ type, species }, page );
   }
-  
+
   @Delete("suspendCharacter/:id")
-  async suspendCharacter(@Param("id") id: number) {
-    if (!Number.isInteger(id) || id < 1 || id > 2147483647) {
+  @HttpCode(200)
+  async suspendCharacter(@Param("id") id: number, @Res() res: Response) {
+    if (typeof id !== 'number' || id < 1 || id > 2147483647) {
       throw new BadRequestException(`Invalid ID: ${id}`);
     }
 
     try {
       await this.killACharacter.execute(id);
-      return `Character with ID ${id} has been suspended`;
+      return res.status(200).json({
+        statusCode: 200,
+        message: `Character with ID ${id} has been suspended`,
+      });
     } catch (error) {
       if (error instanceof NotFoundException) {
         throw new BadRequestException(`Character with ID ${id} not found`);
@@ -95,10 +97,8 @@ import { find } from 'rxjs';
     }
   }
 
-
-   @Patch ("/:id")
-   updateUser(){
-
-   }
-
+  @Patch("/:id")
+  updateUser() {
+    // Implement update logic here
+  }
 }
