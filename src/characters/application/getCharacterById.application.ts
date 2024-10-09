@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException, BadRequestException } from "@nestjs/common";
 import { MigrationService } from "src/migrations/infrastructure/migrations.service";
 import { CharacterDto } from "./Dtos/characterDto.dto";
 
@@ -9,12 +9,16 @@ export class GetCharacterById {
 
     async findOne(id: number, characterDto: CharacterDto): Promise<CharacterDto> {
         if (!id) {
-            throw new Error('ID is required');
+            throw new BadRequestException('ID is required');
         }
 
         const currentCharacter = await this.prisma.character.findUnique({
             where: { id },
         });
+
+        if (!currentCharacter) {
+            throw new NotFoundException('Character not found');
+        }
 
         const status = await this.prisma.status.findUnique({
             where: { id: currentCharacter.status_id },
@@ -23,11 +27,7 @@ export class GetCharacterById {
         const species = await this.prisma.sub_Category.findUnique({
             where: { id: currentCharacter.sub_category_id },
         });
-
-        if (!currentCharacter) {
-            throw new Error('Character not found');
-        }
-
+        
         characterDto.id = currentCharacter.id;
         characterDto.name = currentCharacter.name;
         characterDto.status = status.name;

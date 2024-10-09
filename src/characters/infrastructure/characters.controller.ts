@@ -5,7 +5,8 @@ import { Body,
     Patch, 
     Param, 
     Query, 
-    Delete, } from '@nestjs/common';
+    Delete,
+    NotFoundException, } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { GetCharacterById } from '../application/getCharacterById.application';
 import { CreateCharacterDto } from '../application/Dtos/createCharacter.dto';
@@ -30,9 +31,16 @@ import { CharacterDto } from '../application/Dtos/characterDto.dto';
    }
   
    @Get("findCharacterById/:id")
-   async findCharacterById(@Param("id") id: number){
-    this.characterDto = await this.getCharacterById.findOne(id,this.characterDto);
-    return this.characterDto;
+   async findCharacterById(@Param("id") id: number, @Query() query: any) : Promise<CharacterDto>{
+    try {
+      return await this.getCharacterById.findOne(id, this.characterDto);
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw new NotFoundException(error.message);
+      } else {
+        throw error;
+      }
+    }
    }
   
    @Get()
