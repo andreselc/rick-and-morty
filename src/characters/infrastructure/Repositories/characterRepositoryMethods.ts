@@ -12,8 +12,8 @@ export class CharacterRepositoryMethods implements IRepositoryCharacter {
         this.prisma = new PrismaClient();
     }
 
-    async create(character: CreateCharacterDto): Promise<CharacterDto> {
-        const value = this.findById(character.id);
+    async create(key: number ,character: CreateCharacterDto): Promise<CharacterDto> {
+        const value = this.findById(key);
 
         if((await value).id === -1){
             const species = await this.prisma.sub_Category.findFirst({

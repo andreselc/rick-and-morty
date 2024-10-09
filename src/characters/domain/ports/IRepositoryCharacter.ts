@@ -3,7 +3,7 @@ import { CreateCharacterDto } from "src/characters/application/Dtos/createCharac
 import { UpdateCharacterDto } from "src/characters/application/Dtos/updateCharacter.dtos";
 
 export interface IRepositoryCharacter  { 
-    create(character: CreateCharacterDto): Promise<CharacterDto>;
+    create(id: number, character: CreateCharacterDto): Promise<CharacterDto>;
     update(character: UpdateCharacterDto): void;
     findById(id: number): Promise<CharacterDto>;
 }

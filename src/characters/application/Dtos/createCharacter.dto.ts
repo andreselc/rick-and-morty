@@ -4,9 +4,6 @@ import { IsInt, IsOptional, IsString } from 'class-validator';
 
 @Injectable()
 export class CreateCharacterDto {
-  @IsOptional()
-  @Expose()
-  id?: number;
 
   @IsString()
   @Expose()

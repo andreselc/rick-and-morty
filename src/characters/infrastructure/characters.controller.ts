@@ -39,9 +39,16 @@ import { find } from 'rxjs';
   
    @Post("addCharacter")
    @UsePipes(new ValidationPipe({ transform: true }))
-   addCharacter(@Body() body: CreateCharacterDto){
+   async addCharacter(@Body() body: CreateCharacterDto){
     try {
-      const character = this.charactersRepository.create(body)
+      const prisma = new PrismaClient();
+      const speciesValidation = await prisma.sub_Category.findFirst({
+        where: { name: body.species },
+      });
+      const characterValidation = prisma.character.findFirst({
+        where: { name: body.name, type: body.type, sub_category_id: speciesValidation.id },
+      });
+      const character = this.charactersRepository.create((await characterValidation).id, body)
       return character;
     }
     catch(error) {
