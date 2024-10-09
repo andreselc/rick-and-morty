@@ -6,7 +6,8 @@ import { Body,
     Param, 
     Query, 
     Delete,
-    NotFoundException, } from '@nestjs/common';
+    NotFoundException,
+    BadRequestException, } from '@nestjs/common';
 import { ApiQuery, ApiTags } from '@nestjs/swagger';
 import { GetCharacterById } from '../application/getCharacterById.application';
 import { CreateCharacterDto } from '../application/Dtos/createCharacter.dto';
@@ -15,6 +16,7 @@ import { GetAllCharacters } from '../application/getAllCharacters.application';
 import { KillACharacter } from '../application/killACharacter.application';
 import { CharacterRepositoryMethods } from './Repositories/characterRepositoryMethods';
 import { PrismaClient } from '@prisma/client';
+import { find } from 'rxjs';
 
   
   //NOTA: Recuerda que Session es para manejar los cookies.
@@ -33,9 +35,10 @@ import { PrismaClient } from '@prisma/client';
     this.killACharacter = new KillACharacter(charactersRepository);
    }
   
-   @Post()
-   addCharacter(){
-  
+   @Post("addCharacter")
+   addCharacter(@Body() body: CreateCharacterDto){
+    return this.charactersRepository.create();
+
    }
   
    @Get("getAllCharacters")
@@ -50,14 +53,24 @@ import { PrismaClient } from '@prisma/client';
     return this.getAllCharacters.getCharacters({ type, species }, page );
   }
   
-   @Delete("suspendCharacter/:id")
-   suspendCharacter(@Param("id") id: number){
-    if (!this.killACharacter.execute(id)) {
-      throw new NotFoundException(`Character with ID ${id} not found`);
+  @Delete("suspendCharacter/:id")
+  async suspendCharacter(@Param("id") id: number) {
+    if (!Number.isInteger(id) || id < 1 || id > 2147483647) {
+      throw new BadRequestException(`Invalid ID: ${id}`);
     }
-    return `Character with ID ${id} has been suspended`;
-   }
-  
+
+    try {
+      await this.killACharacter.execute(id);
+      return `Character with ID ${id} has been suspended`;
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw new BadRequestException(`Character with ID ${id} not found`);
+      }
+      throw error;
+    }
+  }
+
+
    @Patch ("/:id")
    updateUser(){
 

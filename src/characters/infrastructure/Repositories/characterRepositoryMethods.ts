@@ -12,7 +12,7 @@ export class CharacterRepositoryMethods implements IRepositoryCharacter {
     }
 
     create(): void {
-        throw new Error("Method not implemented.");
+        
     }
 
     async update(updateData: UpdateCharacterDto): Promise<void> {
@@ -22,7 +22,7 @@ export class CharacterRepositoryMethods implements IRepositoryCharacter {
         });
 
         if (!existingCharacter) {
-            throw new Error("Character not found.");
+            throw new NotFoundException("Character not found.");
         }
 
         if (updateData.name)
@@ -47,6 +47,7 @@ export class CharacterRepositoryMethods implements IRepositoryCharacter {
             where: { id: existingCharacter.id },
             data: existingCharacter,
         });
+
 }
 
     async findById(id: number): Promise<CharacterDto> {
