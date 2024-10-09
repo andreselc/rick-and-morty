@@ -7,11 +7,11 @@ import { Body,
     Query, 
     Delete,
     NotFoundException, } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiQuery, ApiTags } from '@nestjs/swagger';
 import { GetCharacterById } from '../application/getCharacterById.application';
 import { CreateCharacterDto } from '../application/Dtos/createCharacter.dto';
 import { CharacterDto } from '../application/Dtos/characterDto.dto';
-//import { GetAllCharacters } from '../application/getAllCharacters.application';
+import { GetAllCharacters } from '../application/getAllCharacters.application';
 
   
   //NOTA: Recuerda que Session es para manejar los cookies.
@@ -24,7 +24,7 @@ import { CharacterDto } from '../application/Dtos/characterDto.dto';
    constructor (
     private getCharacterById: GetCharacterById,
     private characterDto: CharacterDto,
-    //private getAllCharacters: GetAllCharacters,
+    private getAllCharacters: GetAllCharacters,
    )  {}
   
    @Post()
@@ -46,11 +46,13 @@ import { CharacterDto } from '../application/Dtos/characterDto.dto';
    }
   
    @Get("getAllCharacters")
+   @ApiQuery({ name: 'type', required: false, type: String })
+   @ApiQuery({ name: 'species', required: false, type: String })
    findAllCharacters(
     @Query('type') type?: string,
     @Query('species') species?: string
-   )  {
-    //return this.getAllCharacters.getCharacters({ type, species });
+   ) :Promise<CharacterDto[]> {
+    return this.getAllCharacters.getCharacters({ type, species });
   }
   
    @Delete("/:id")
