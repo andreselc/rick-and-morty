@@ -39,21 +39,31 @@ import { find } from 'rxjs';
   
    @Post("addCharacter")
    @UsePipes(new ValidationPipe({ transform: true }))
-   async addCharacter(@Body() body: CreateCharacterDto){
-    try {
-      const prisma = new PrismaClient();
-      const speciesValidation = await prisma.sub_Category.findFirst({
-        where: { name: body.species },
-      });
-      const characterValidation = prisma.character.findFirst({
-        where: { name: body.name, type: body.type, sub_category_id: speciesValidation.id },
-      });
-      const character = this.charactersRepository.create((await characterValidation).id, body)
-      return character;
-    }
-    catch(error) {
-      throw new BadRequestException(`Error: ${error}`);
-    }
+   async addCharacter(@Body() body: CreateCharacterDto) {
+     try {
+       const prisma = new PrismaClient();
+       const speciesValidation = await prisma.sub_Category.findFirst({
+         where: { name: body.species },
+       });
+ 
+       if (!speciesValidation) {
+         throw new NotFoundException('Species not found');
+       }
+ 
+       const characterValidation = await prisma.character.findFirst({
+         where: { name: body.name, type: body.type, sub_category_id: speciesValidation.id },
+       });
+ 
+       let key = -1;
+       if (characterValidation) {
+         key = characterValidation.id;
+       }
+ 
+       const character = await this.charactersRepository.create(key, body);
+       return character;
+     } catch (error) {
+       throw new BadRequestException(`Something went wrong: ${error.message}`);
+     }
    }
   
    @Get("getAllCharacters")
