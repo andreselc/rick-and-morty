@@ -11,6 +11,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { GetCharacterById } from '../application/getCharacterById.application';
 import { CreateCharacterDto } from '../application/Dtos/createCharacter.dto';
 import { CharacterDto } from '../application/Dtos/characterDto.dto';
+//import { GetAllCharacters } from '../application/getAllCharacters.application';
 
   
   //NOTA: Recuerda que Session es para manejar los cookies.
@@ -22,7 +23,8 @@ import { CharacterDto } from '../application/Dtos/characterDto.dto';
   
    constructor (
     private getCharacterById: GetCharacterById,
-    private characterDto: CharacterDto
+    private characterDto: CharacterDto,
+    //private getAllCharacters: GetAllCharacters,
    )  {}
   
    @Post()
@@ -43,10 +45,13 @@ import { CharacterDto } from '../application/Dtos/characterDto.dto';
     }
    }
   
-   @Get()
-   findAllCharacters(){
-
-   }
+   @Get("getAllCharacters")
+   findAllCharacters(
+    @Query('type') type?: string,
+    @Query('species') species?: string
+   )  {
+    //return this.getAllCharacters.getCharacters({ type, species });
+  }
   
    @Delete("/:id")
    removeUser(@Param("id") id: string){

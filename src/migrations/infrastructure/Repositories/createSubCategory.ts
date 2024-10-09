@@ -2,7 +2,7 @@ import { IRespository } from "src/migrations/domain/IRepository";
 import { PrismaClient } from "@prisma/client";
 import axios from 'axios';
 import { GetAllCharactersAdapter } from "../../../characters/infrastructure/adapters/getAllCharactersAdapter";
-import { GetAllCharactersApplication } from "src/characters/application/getAllCharacters.application";
+import { GetAllCharactersApplication } from "src/characters/application/getAllCharactersForMigration.application";
 import { SaveAllSeasonsAdapter } from "src/episodes/infrastructure/adapters/saveAllSeasonsAdapter";
 import { SaveAllSeasonsApplication } from "src/episodes/application/saveAllSeasons.application";
 

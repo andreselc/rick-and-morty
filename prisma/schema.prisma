@@ -58,6 +58,7 @@ model Character {
   id Int      @id @default(autoincrement())
   name String
   sub_category_id Int
+  type String?
   sub_category sub_Category @relation(fields: [sub_category_id], references: [id])
   status_id Int
   status Status @relation(fields: [status_id], references: [id])
