@@ -14,9 +14,8 @@ export class CharacterRepositoryMethods implements IRepositoryCharacter {
 
     async create(character: CreateCharacterDto): Promise<CharacterDto> {
         const value = this.findById(character.id);
-        console.log("Pasa por 1")
+
         if((await value).id === -1){
-            console.log("Character not found");
             const species = await this.prisma.sub_Category.findFirst({
                 where: { id: character.sub_category_id },
             });
@@ -26,7 +25,7 @@ export class CharacterRepositoryMethods implements IRepositoryCharacter {
                         sub_category_id: species.id
                 },
             });
-            console.log("Pasa por 2")
+
             if (!characterCondtion) {
                 const status = await this.prisma.status.findFirst({
                     where: { id: character.status_id },
@@ -45,15 +44,17 @@ export class CharacterRepositoryMethods implements IRepositoryCharacter {
                 characterOutput.type = newCharacter.type;
                 characterOutput.status = status.name;
                 characterOutput.species = species.name;
-                console.log("Pasa por 3")
+
                 return characterOutput;
 
             }
             else {
-                throw new BadRequestException("Character already exists.");
+                throw new BadRequestException("There is already one character with the same name, species and type.");
             }
         }
-      return null  
+        else {
+            throw new BadRequestException("Character already exists.");
+        }
     }
 
     async update(updateData: UpdateCharacterDto): Promise<void> {
