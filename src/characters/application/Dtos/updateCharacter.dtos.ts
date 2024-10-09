@@ -5,10 +5,6 @@ import { isNumber, IsString } from "class-validator";
 
 export class UpdateCharacterDto {
 
-    @Expose()
-    @ApiProperty({ required: false })
-    id?: number;
-
     @IsString()
     @Expose()
     @ApiProperty({ required: false })

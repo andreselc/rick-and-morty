@@ -57,10 +57,10 @@ export class CharacterRepositoryMethods implements IRepositoryCharacter {
         }
     }
 
-    async update(updateData: UpdateCharacterDto): Promise<void> {
+    async update(id_character: number, updateData: UpdateCharacterDto): Promise<void> {
         
         const existingCharacter = await this.prisma.character.findUnique({
-            where: { id: updateData.id },
+            where: { id: id_character },
         });
 
         if (!existingCharacter) {

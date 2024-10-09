@@ -118,7 +118,7 @@ export class CharactersController {
           body.sub_category_id = speciesValidation.id;
         }
 
-        await this.charactersRepository.update(body);
+        await this.charactersRepository.update(character.id, body);
         return res.status(200).json({
           statusCode: 200,
           message: 'Character updated successfully',
