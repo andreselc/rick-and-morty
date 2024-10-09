@@ -48,11 +48,15 @@ import { GetAllCharacters } from '../application/getAllCharacters.application';
    @Get("getAllCharacters")
    @ApiQuery({ name: 'type', required: false, type: String })
    @ApiQuery({ name: 'species', required: false, type: String })
+   @ApiQuery({ name: 'page', required: false, type: Number })
+   @ApiQuery({ name: 'limit', required: false, type: Number })
    findAllCharacters(
     @Query('type') type?: string,
-    @Query('species') species?: string
+    @Query('species') species?: string,
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 5
    ) :Promise<CharacterDto[]> {
-    return this.getAllCharacters.getCharacters({ type, species });
+    return this.getAllCharacters.getCharacters({ type, species }, page, limit);
   }
   
    @Delete("/:id")
