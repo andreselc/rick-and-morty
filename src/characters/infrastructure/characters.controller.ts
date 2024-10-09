@@ -7,7 +7,9 @@ import { Body,
     Query, 
     Delete,
     NotFoundException,
-    BadRequestException, } from '@nestjs/common';
+    BadRequestException,
+    UsePipes,
+    ValidationPipe, } from '@nestjs/common';
 import { ApiQuery, ApiTags } from '@nestjs/swagger';
 import { GetCharacterById } from '../application/getCharacterById.application';
 import { CreateCharacterDto } from '../application/Dtos/createCharacter.dto';
@@ -36,9 +38,15 @@ import { find } from 'rxjs';
    }
   
    @Post("addCharacter")
+   @UsePipes(new ValidationPipe({ transform: true }))
    addCharacter(@Body() body: CreateCharacterDto){
-    return this.charactersRepository.create();
-
+    try {
+      const character = this.charactersRepository.create(body)
+      return character;
+    }
+    catch(error) {
+      throw new BadRequestException(`Error: ${error}`);
+    }
    }
   
    @Get("getAllCharacters")

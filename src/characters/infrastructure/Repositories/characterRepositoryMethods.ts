@@ -1,6 +1,7 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import { PrismaClient } from "@prisma/client";
 import { CharacterDto } from "src/characters/application/Dtos/characterDto.dto";
+import { CreateCharacterDto } from "src/characters/application/Dtos/createCharacter.dto";
 import { UpdateCharacterDto } from "src/characters/application/Dtos/updateCharacter.dtos";
 import { IRepositoryCharacter } from "src/characters/domain/ports/IRepositoryCharacter";
 
@@ -11,8 +12,48 @@ export class CharacterRepositoryMethods implements IRepositoryCharacter {
         this.prisma = new PrismaClient();
     }
 
-    create(): void {
-        
+    async create(character: CreateCharacterDto): Promise<CharacterDto> {
+        const value = this.findById(character.id);
+        console.log("Pasa por 1")
+        if((await value).id === -1){
+            console.log("Character not found");
+            const species = await this.prisma.sub_Category.findFirst({
+                where: { id: character.sub_category_id },
+            });
+            const characterCondtion = await this.prisma.character.findFirst({
+                where: { type: character.type, 
+                        name: character.name,
+                        sub_category_id: species.id
+                },
+            });
+            console.log("Pasa por 2")
+            if (!characterCondtion) {
+                const status = await this.prisma.status.findFirst({
+                    where: { id: character.status_id },
+                });
+                const newCharacter = await this.prisma.character.create({
+                    data: {
+                        name: character.name,
+                        type: character.type,
+                        status_id: status.id,
+                        sub_category_id: species.id,
+                    },
+                
+                });
+                let characterOutput = new CharacterDto();
+                characterOutput.name = newCharacter.name;
+                characterOutput.type = newCharacter.type;
+                characterOutput.status = status.name;
+                characterOutput.species = species.name;
+                console.log("Pasa por 3")
+                return characterOutput;
+
+            }
+            else {
+                throw new BadRequestException("Character already exists.");
+            }
+        }
+      return null  
     }
 
     async update(updateData: UpdateCharacterDto): Promise<void> {
@@ -51,12 +92,30 @@ export class CharacterRepositoryMethods implements IRepositoryCharacter {
 }
 
     async findById(id: number): Promise<CharacterDto> {
+
+        if (!Number.isInteger(id) || id < 1 || id > 2147483647) {
+            return {
+                id: -1,
+                name: "Character not found",
+                type: "Character not found",
+                status: "Character not found",
+                species: "Character not found",
+                episodes: [],
+            };
+        }
         const character = await this.prisma.character.findUnique({
             where: { id },
         });
 
-        if (!character) {
-            throw new NotFoundException('Character not found');
+        if (!character) { 
+            return {
+                id: -1,
+                name: "Character not found",
+                type: "Character not found",
+                status: "Character not found",
+                species: "Character not found",
+                episodes: [],
+            };
         }
 
         const status = await this.prisma.status.findUnique({
