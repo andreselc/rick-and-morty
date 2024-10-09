@@ -123,10 +123,25 @@ export class CharacterRepositoryMethods implements IRepositoryCharacter {
             where: { id: character.status_id },
         });
 
+        //hallar todos los episodios de un personaje
+        const episodes = await this.prisma.episodeCharacter.findMany({
+            where: { character_id: character.id },
+        });
+
+        let episodiosArray: string[] = [];
+
+        for(let i = 0; i < episodes.length; i++) {
+            const episode = await this.prisma.episode.findUnique({
+                where: { id: episodes[i].episode_id },
+            });
+            episodiosArray.push(episode.name);
+        }
+
         const characterDto = new CharacterDto();
         characterDto.id = character.id;
         characterDto.name = character.name;
         characterDto.type = character.type;
+        characterDto.episodes = episodiosArray;
         characterDto.status = status.name;
 
         return characterDto;

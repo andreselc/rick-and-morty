@@ -79,14 +79,13 @@ export class GetAllCharacters {
         let episodesArray: string[] = [];
 
         if (episodes) {
-          episodes.forEach(async episode => {
-
-            const episodeName = await this.prisma.episode.findFirst({
-                where: { id: episode.episode_id },
+    
+          for(let i = 0; i < episodes.length; i++) {
+              const episode = await this.prisma.episode.findUnique({
+                  where: { id: episodes[i].episode_id },
               });
-
-            episodesArray.push(episodeName.name);
-          });
+              episodesArray.push(episode.name);
+          }
         }
 
         const characterDto = new CharacterDto();
