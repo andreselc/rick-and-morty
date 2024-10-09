@@ -2,6 +2,8 @@ import { Controller, Post, Body, Res, HttpCode, Get, Query, Delete, Param, Patch
 import { ApiTags, ApiQuery, ApiBody } from '@nestjs/swagger';
 import { Response } from 'express';
 import { PrismaClient } from '@prisma/client';
+import { GetAllEpisodes } from '../application/getAllEpisodes.application';
+import { EpisodeDto, } from '../application/Dtos/episodeDto.dto';
 
 
 @Controller()
@@ -9,9 +11,8 @@ import { PrismaClient } from '@prisma/client';
 export class EpisodesController {
 
   constructor(
-    
+    private getAllEpisodes: GetAllEpisodes,
   ) {
-    
   }
 
   @Get("getAllEpisodes")
@@ -19,10 +20,10 @@ export class EpisodesController {
    @ApiQuery({ name: 'page', required: false, type: Number })
    @HttpCode(200)
    findAllEpisodes(
-    @Query('season') species?: string,
+    @Query('season') season?: number,
     @Query('page') page: number = 1,
-   )  {
-    //return this.getAllEpisodes.getCharacters({ type, species }, page );
+   ) :Promise<EpisodeDto[]> {
+    return this.getAllEpisodes.getEpisodes({ season }, page );
   }
 
   @Post("addEpisode")

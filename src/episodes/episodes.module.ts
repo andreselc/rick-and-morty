@@ -1,12 +1,15 @@
 import { Module } from '@nestjs/common';
 import { MigrationService } from 'src/migrations/infrastructure/migrations.service';
 import { EpisodesController } from './infrastructure/episodes.controller';
+import { GetAllEpisodes } from './application/getAllEpisodes.application';
 
 @Module({
     imports: [],
-    providers: [MigrationService     
+    providers: [MigrationService,
+      GetAllEpisodes,    
     ],
-    exports: [MigrationService
+    exports: [MigrationService,
+      GetAllEpisodes,
 
     ],
     controllers:  [EpisodesController]

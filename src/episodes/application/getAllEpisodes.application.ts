@@ -6,45 +6,51 @@ import { EpisodeDto } from './Dtos/episodeDto.dto';
 export class GetAllEpisodes {
   constructor(private prisma: MigrationService) {}
 
-  async getEpisodes(filters: { season?: number;  }, page: number): Promise<any> {
-    const { season } = filters;
-    const limit: number = 5
+  async getEpisodes(filters: { season?: number; }, page: number): Promise<any> {
+    let { season } = filters;
+    const limit: number = 5;
 
-    const checkSeason = await this.prisma.sub_Category.findFirst({
-        where: { id: season },
-    });
+    // Si la temporada no está definida o es menor que 1, no filtrar por temporada
+    let where = {};
+    if (season && season >= 1) {
+      let seasonSubcategory = `Season ${season}`;
 
-    if(!checkSeason){
+      const checkSeason = await this.prisma.sub_Category.findFirst({
+        where: { name: seasonSubcategory },
+      });
+
+      if (!checkSeason) {
         throw new NotFoundException('Season not found');
-    }
+      }
 
-    const where = {
-      ...(season && { sub_category_id: checkSeason.id }),
-    };
+      where = {
+        sub_category_id: checkSeason.id,
+      };
+    }
 
     const totalEpisodes = await this.prisma.episode.count({ where });
 
     if (totalEpisodes === 0) {
-        return {
-          info: {
-            count: 0,
-            pages: 0,
-            next: null,
-            prev: null,
-          },
-          results: [],
-        };
+      return {
+        info: {
+          count: 0,
+          pages: 0,
+          next: null,
+          prev: null,
+        },
+        results: [],
+      };
     }
 
     const totalPages = Math.ceil(totalEpisodes / limit);
     let offset = (page - 1) * limit;
 
-    if (!offset || offset<=0) {
-        offset=1;
+    if (!offset || offset <= 0) {
+      offset = 0;
     }
 
-    if (!page || page<=0) {
-        page=1;
+    if (!page || page <= 0) {
+      page = 1;
     }
 
     const episodes = await this.prisma.episode.findMany({
@@ -78,12 +84,11 @@ export class GetAllEpisodes {
         let charactersArray: string[] = [];
 
         if (characters) {
-    
-          for(let i = 0; i < characters.length; i++) {
-              const character = await this.prisma.character.findUnique({
-                  where: { id: episodes[i].id },
-              });
-              charactersArray.push(character.name);
+          for (let i = 0; i < characters.length; i++) {
+            const character = await this.prisma.character.findUnique({
+              where: { id: characters[i].character_id },
+            });
+            charactersArray.push(character.name);
           }
         }
 
@@ -92,7 +97,7 @@ export class GetAllEpisodes {
         episodeDto.name = episodeValidation.name;
         episodeDto.status = status.name;
         episodeDto.season = seasons.name;
-        episodeDto.characters= charactersArray;
+        episodeDto.characters = charactersArray;
         return episodeDto;
       })
     );
