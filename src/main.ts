@@ -23,7 +23,7 @@ async function bootstrap() {
 
   await seeder.seed();
 
-  app.setGlobalPrefix("api/v1");
+  app.setGlobalPrefix("api");
 
   app.useGlobalPipes(
     new ValidationPipe({
