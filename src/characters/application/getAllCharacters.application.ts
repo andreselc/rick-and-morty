@@ -6,8 +6,9 @@ import { CharacterDto } from './Dtos/characterDto.dto';
 export class GetAllCharacters {
   constructor(private prisma: MigrationService) {}
 
-  async getCharacters(filters: { type?: string; species?: string }, page: number = 1, limit: number = 5): Promise<any> {
+  async getCharacters(filters: { type?: string; species?: string }, page: number): Promise<any> {
     const { type, species } = filters;
+    const limit: number = 5
 
     const where = {
       ...(type && { type }),
@@ -16,9 +17,17 @@ export class GetAllCharacters {
 
     const totalCharacters = await this.prisma.character.count({ where });
     const totalPages = Math.ceil(totalCharacters / limit);
-    const offset = (page - 1) * limit;
+    let offset = (page - 1) * limit;
 
-    const characters = await this.prisma.character.findMany();
+    if (!offset || offset<=0) {
+        offset=1;
+    }
+
+    const characters = await this.prisma.character.findMany({
+      where,
+      skip: offset,
+      take: limit,
+    });
 
     const characterDtos = await Promise.all(
       characters.map(async character => {
@@ -73,8 +82,6 @@ export class GetAllCharacters {
       info: {
         count: totalCharacters,
         pages: totalPages,
-        next: nextPage ? `https://rickandmortyapi.com/api/character/?page=${nextPage}&type=${type}&species=${species}` : null,
-        prev: prevPage ? `https://rickandmortyapi.com/api/character/?page=${prevPage}&type=${type}&species=${species}` : null,
       },
       results: characterDtos,
     };
