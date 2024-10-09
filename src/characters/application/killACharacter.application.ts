@@ -18,12 +18,6 @@ export class KillACharacter {
 
         character.status = 'suspended';
 
-        updateCharacter.name = character.name;
-        updateCharacter.type = character.type;
-        updateCharacter.status = character.status;
-        updateCharacter.episodes = character.episodes;
-        updateCharacter.species = character.species;
-        
         await this.characterRepository.update(characterId, character);
     }
 }

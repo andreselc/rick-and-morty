@@ -1,35 +1,27 @@
 import { Injectable } from "@nestjs/common";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose } from "class-transformer";
-import { isNumber, IsString } from "class-validator";
+import { isNumber, IsOptional, IsString } from "class-validator";
 
 export class UpdateCharacterDto {
 
+    @ApiProperty()
+    @IsOptional()
     @IsString()
-    @Expose()
-    @ApiProperty({ required: false })
     name?: string;
 
+    @ApiProperty()
+    @IsOptional()
     @IsString()
-    @Expose()
-    @ApiProperty({ required: false })
     type?: string;
 
+    @ApiProperty()
+    @IsOptional()
     @IsString()
-    @Expose()
-    @ApiProperty({ required: false })
     status?: string;
-
-    @Expose()
-    @ApiProperty({ required: false })
-    sub_category_id?: number;
-
+  
+    @ApiProperty()
+    @IsOptional()
     @IsString()
-    @Expose()
-    @ApiProperty({ required: false })
-    species: string;
-
-    @Expose()
-    @ApiProperty({ required: false })
-    episodes?: string[];
+    species?: string;
 }

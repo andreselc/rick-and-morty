@@ -86,7 +86,6 @@ export class CharactersController {
   @Patch("updatePartially/:id")
   @UsePipes(new ValidationPipe ({ transform: true}))
   @HttpCode(200)
-  @ApiBody({ type: UpdateCharacterDto })
   async updatePartiallyACharacter(@Body() body: UpdateCharacterDto, @Param("id") id: number,@Res() res: Response) {
       try {
         const prisma = new PrismaClient();
@@ -115,7 +114,7 @@ export class CharactersController {
             throw new NotFoundException('Species not found');
           }
 
-          body.sub_category_id = speciesValidation.id;
+          body.species = speciesValidation.name;
         }
 
         await this.charactersRepository.update(character.id, body);
