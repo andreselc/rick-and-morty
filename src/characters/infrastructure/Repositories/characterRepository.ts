@@ -36,7 +36,8 @@ export class CharacterRepository implements IRespository<PrismaClient> {
                         data: {
                             name: charactersArray[i].name,
                             sub_category_id: characterSpecie.id,
-                            status_id: statusCharacter.id
+                            status_id: statusCharacter.id,
+                            type: charactersArray[i].type
                         },
                     });
                 }  
