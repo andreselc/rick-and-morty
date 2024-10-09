@@ -1,7 +1,12 @@
+import { Injectable } from '@nestjs/common';
 import { Expose } from 'class-transformer';
 import { IsString } from 'class-validator';
 
-export class CreateEpisodeDto {
+@Injectable()
+export class EpisodeDto {
+  @Expose()
+  id: number;
+
   @Expose()
   @IsString()
   name: string ;
@@ -17,4 +22,9 @@ export class CreateEpisodeDto {
   @Expose()
   @IsString()
   status: string;
+
+  @Expose()
+  @IsString()
+  characters: string[];
+  
 }

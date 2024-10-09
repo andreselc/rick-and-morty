@@ -2,11 +2,7 @@ import { Controller, Post, Body, Res, HttpCode, Get, Query, Delete, Param, Patch
 import { ApiTags, ApiQuery, ApiBody } from '@nestjs/swagger';
 import { Response } from 'express';
 import { PrismaClient } from '@prisma/client';
-import { GetAllCharacters } from './../../characters/application/getAllCharacters.application';
-import { KillACharacter } from './../../characters/application/killACharacter.application';
-import { CharacterRepositoryMethods } from '../../characters/infrastructure/Repositories/characterRepositoryMethods';
-import { CreateCharacterDto } from './../../characters/application/Dtos/createCharacter.dto';
-import { CharacterDto } from './../../characters/application/Dtos/characterDto.dto';
+
 
 @Controller()
 @ApiTags("Episodes")
@@ -32,21 +28,21 @@ export class EpisodesController {
   @Post("addEpisode")
   @UsePipes(new ValidationPipe({ transform: true }))
   @HttpCode(201)
-  async addEpisode(@Body() body: CreateCharacterDto, @Res() res: Response) {
+  async addEpisode(@Body() body, @Res() res: Response) {
     
   }
 
-  @Patch("updatePartially/:id")
+  @Patch("updateEpisode/:id")
   @UsePipes(new ValidationPipe ({ transform: true}))
   @HttpCode(200)
-  async updatePartiallyAnEpisode(@Body() body: UpdateCharacterDto, @Param("id") id: number,@Res() res: Response) {
+  async updatePartiallyAnEpisode(@Body() body, @Param("id") id: number,@Res() res: Response) {
      
   }
 
 
-  @Delete("suspendCharacter/:id")
+  @Delete("cancelEpisode/:id")
   @HttpCode(200)
-  async cancelAnEpisode(@Param("id") id: number, @Res() res: Response) {
+  async cancelAnEpisode(@Param("id") id:  number, @Res() res: Response) {
    
   }
 }
