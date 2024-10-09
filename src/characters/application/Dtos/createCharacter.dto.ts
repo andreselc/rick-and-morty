@@ -16,12 +16,12 @@ export class CreateCharacterDto {
   @Expose()
   type: string;
 
-  @IsInt()
+  @IsString()
   @Expose()
-  sub_category_id: number;
+  species: string;
 
-  @IsInt()
+  @IsString()
   @Expose()
-  status_id: number;
+  status: string;
   
 }

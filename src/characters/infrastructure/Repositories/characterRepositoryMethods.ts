@@ -17,7 +17,7 @@ export class CharacterRepositoryMethods implements IRepositoryCharacter {
 
         if((await value).id === -1){
             const species = await this.prisma.sub_Category.findFirst({
-                where: { id: character.sub_category_id },
+                where: { name: character.species },
             });
             const characterCondtion = await this.prisma.character.findFirst({
                 where: { type: character.type, 
@@ -28,7 +28,7 @@ export class CharacterRepositoryMethods implements IRepositoryCharacter {
 
             if (!characterCondtion) {
                 const status = await this.prisma.status.findFirst({
-                    where: { id: character.status_id },
+                    where: { name: character.status },
                 });
                 const newCharacter = await this.prisma.character.create({
                     data: {
