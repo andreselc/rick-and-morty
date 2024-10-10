@@ -4,6 +4,8 @@ import { CharactersController } from './characters/infrastructure/characters.con
 import { CharactersModule } from './characters/characters.module';
 import { EpisodesController } from './episodes/infrastructure/episodes.controller';
 import { EpisodesModule } from './episodes/episodes.module';
+import { ParticipationModule } from './participation/participation.module';
+import { ParticipationController } from './participation/participation.controller';
 
 
 @Module({
@@ -12,11 +14,13 @@ import { EpisodesModule } from './episodes/episodes.module';
       isGlobal: true
     }),
     CharactersModule,
-    EpisodesModule
+    EpisodesModule,
+    ParticipationModule
 
   ],
   controllers: [CharactersController,
-    EpisodesController
+    EpisodesController,
+    ParticipationController
   ],
   providers: [],
 })
