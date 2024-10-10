@@ -41,43 +41,48 @@ export class EpisodesRepositoryMethods implements IRepositoryEpisode {
     }
 
     async update(id_episode: number, updateData: UpdateEpisodeDto): Promise<void> {
-        
         const existingEpisode = await this.prisma.episode.findUnique({
-            where: { id: id_episode },
+          where: { id: id_episode },
         });
-
+      
         if (!existingEpisode) {
-            throw new NotFoundException("Episode not found.");
+          throw new NotFoundException("Episode not found.");
         }
-
-        if (updateData.name)
-            existingEpisode.name = updateData.name;
-
-        if(updateData.status){
-            const status = await this.prisma.status.findFirst({
-                where: { name: updateData.status },
-            });
-        existingEpisode.status_id = status.id;
+      
+        if (updateData.name) {
+          existingEpisode.name = updateData.name;
         }
-        if(updateData.season){
-            const realSeason = `Season ${updateData.season}`  
-            const numberSeason = await this.prisma.sub_Category.findFirst({
-                where: { name: realSeason },
-            });
-            if (!numberSeason) {
-                throw new NotFoundException("Season not found.");
-            }
-            else {
-                existingEpisode.sub_category_id = numberSeason.id;
-            }
+      
+        if (updateData.status) {
+          const status = await this.prisma.status.findFirst({
+            where: { name: updateData.status },
+          });
+          if (!status) {
+            throw new NotFoundException("Status not found.");
+          }
+          existingEpisode.status_id = status.id;
         }
-
+      
+        if (updateData.season) {
+          const realSeason = `Season ${updateData.season}`;
+          const numberSeason = await this.prisma.sub_Category.findFirst({
+            where: { name: realSeason },
+          });
+          if (!numberSeason) {
+            throw new NotFoundException("Season not found.");
+          }
+          existingEpisode.sub_category_id = numberSeason.id;
+        }
+      
+        if (updateData.duration) {
+          existingEpisode.duration = updateData.duration;
+        }
+      
         await this.prisma.episode.update({
-            where: { id:existingEpisode.id },
-            data: existingEpisode,
+          where: { id: existingEpisode.id },
+          data: existingEpisode,
         });
-
-}
+      }
 
         async findById(id: number): Promise<EpisodeDto> {
             if (!Number.isInteger(id) || id < 1 || id > 2147483647) {
