@@ -7,6 +7,9 @@ import { DeleteCharacterFromParticipation } from './../application/deleteCharact
 import { ParticipationRepository } from './Repository/participationRepository';
 import { CharacterRepository } from 'src/characters/infrastructure/Repositories/characterAPIRepository';
 import { CharacterRepositoryMethods } from 'src/characters/infrastructure/Repositories/characterRepositoryMethods';
+import { CharacterToEpisodeDto } from '../application/Dtos/characterToEpisodeDto.dto';
+import { AddCharacterFromParticipation } from '../application/addCharacterFromEpisode.application';
+import { EpisodesRepositoryMethods } from 'src/episodes/infrastructure/Repositories/episodeRepositoryApi';
 
 @Controller()
 @ApiTags("Participation")
@@ -16,13 +19,16 @@ export class ParticipationController {
     private getParticipationsForEpisode: GetParticipationInEpisode,
     private deleteCharacterFromEpisode: DeleteCharacterFromParticipation,
     private participationRepository: ParticipationRepository,
-    private characterRepository: CharacterRepositoryMethods
+    private characterRepository: CharacterRepositoryMethods,
+    private addCharacterFromEpisode: AddCharacterFromParticipation,
+    private episodeRepository: EpisodesRepositoryMethods
 
   ) {
     this.participationRepository = new ParticipationRepository();
     this.characterRepository = new CharacterRepositoryMethods();
-    this.deleteCharacterFromEpisode = new DeleteCharacterFromParticipation(this.participationRepository
-      , this.characterRepository);
+    this.deleteCharacterFromEpisode = new DeleteCharacterFromParticipation(this.participationRepository, this.characterRepository);
+    this.episodeRepository = new EpisodesRepositoryMethods();
+    this.addCharacterFromEpisode = new AddCharacterFromParticipation(this.participationRepository,this.characterRepository,this.episodeRepository);
 
   }
 
@@ -45,9 +51,19 @@ export class ParticipationController {
     @Post("addParticipation")
     @UsePipes(new ValidationPipe({ transform: true }))
     @HttpCode(201)
-    async addParticipation(@Body() body, @Res() res: Response) {
-    
+    async addParticipation(@Body() characterToEpisodeDto: CharacterToEpisodeDto,@Res() res: Response) {
+    try {
+      await this.addCharacterFromEpisode.execute(characterToEpisodeDto);
+      return res.status(201).json({
+        statusCode: 201,
+        message: `Character with ID ${characterToEpisodeDto.characterId} has been added 
+        to episode with ID ${characterToEpisodeDto.episodeId} 
+        from ${characterToEpisodeDto.timeInit} to ${characterToEpisodeDto.timeFinished}`,
+      });
+    } catch (error) {
+        throw new BadRequestException(error.message);
     }
+  }
 
     @Patch("updateParticipation/:id")
     @UsePipes(new ValidationPipe({ transform: true }))

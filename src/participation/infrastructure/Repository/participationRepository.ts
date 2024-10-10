@@ -1,5 +1,7 @@
 import { BadRequestException } from "@nestjs/common";
 import { PrismaClient } from "@prisma/client";
+import { CharacterDto } from "src/characters/application/Dtos/characterDto.dto";
+import { EpisodeDto } from "src/episodes/application/Dtos/episodeDto.dto";
 import { CharacterToEpisode } from "src/participation/domain/characterToEpisode";
 import { IParticipationRepository } from "src/participation/domain/ports/IParticipationRepository";
 
@@ -47,6 +49,27 @@ export class ParticipationRepository implements IParticipationRepository {
     async update(): Promise<void> {
         
     }
+
+    async getParticipation(character: CharacterDto, episode: EpisodeDto): Promise<CharacterToEpisode | null> {
+        const characterInEpisode = await this.prisma.episodeCharacter.findFirst({
+            where : { 
+                episode_id: episode.id,
+                character_id: character.id
+            }
+        });
+
+        if (!characterInEpisode) {
+            return null;
+        }
+
+        return {
+            characterId: characterInEpisode.character_id,
+            episodeId: characterInEpisode.episode_id,
+            timeInit: characterInEpisode.time_init,
+            timeFinished: characterInEpisode.time_finished,
+        } as CharacterToEpisode;
+    }
+
 
     async delete(characterId: number, episodeId: number): Promise<void> {
         const deleteCharacter = await this.prisma.episodeCharacter.deleteMany({

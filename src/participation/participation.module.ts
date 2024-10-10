@@ -6,6 +6,8 @@ import { DeleteCharacterFromParticipation } from './../participation/application
 import { CharacterRepository } from 'src/characters/infrastructure/Repositories/characterAPIRepository';
 import { ParticipationRepository } from './infrastructure/Repository/participationRepository';
 import { CharacterRepositoryMethods } from 'src/characters/infrastructure/Repositories/characterRepositoryMethods';
+import { AddCharacterFromParticipation } from './application/addCharacterFromEpisode.application';
+import { EpisodesRepositoryMethods } from 'src/episodes/infrastructure/Repositories/episodeRepositoryApi';
 
 @Module({
   imports: [],
@@ -13,6 +15,8 @@ import { CharacterRepositoryMethods } from 'src/characters/infrastructure/Reposi
     MigrationService,
     GetParticipationInEpisode, 
     DeleteCharacterFromParticipation,
+    AddCharacterFromParticipation,
+
     {
       provide: 'IParticipationRepository',
       useClass: ParticipationRepository,
@@ -21,6 +25,7 @@ import { CharacterRepositoryMethods } from 'src/characters/infrastructure/Reposi
       provide: 'IRepositoryCharacter',
       useClass: CharacterRepository,
     },
+    EpisodesRepositoryMethods,
     ParticipationRepository,
     CharacterRepositoryMethods 
   ],
@@ -28,8 +33,10 @@ import { CharacterRepositoryMethods } from 'src/characters/infrastructure/Reposi
     MigrationService,
     GetParticipationInEpisode,
     DeleteCharacterFromParticipation,
+    AddCharacterFromParticipation,
     ParticipationRepository,
-    CharacterRepositoryMethods 
+    CharacterRepositoryMethods,
+    EpisodesRepositoryMethods
   ],
   controllers: [ParticipationController]
 })
