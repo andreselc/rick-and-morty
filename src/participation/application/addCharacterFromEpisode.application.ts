@@ -3,6 +3,7 @@ import { IParticipationRepository } from "../domain/ports/IParticipationReposito
 import { IRepositoryCharacter } from "src/characters/domain/ports/IRepositoryCharacter";
 import { CharacterToEpisodeDto } from "./Dtos/characterToEpisodeDto.dto";
 import { CharacterToEpisode } from "../domain/characterToEpisode";
+import { ValidateDuration } from "src/episodes/domain/validateDuration";
 
 export class AddCharacterFromParticipation {
 
@@ -13,8 +14,12 @@ export class AddCharacterFromParticipation {
     async execute(addCharacterToEpisodeDto: CharacterToEpisodeDto): Promise<void> {
         const { characterId, episodeId, timeInit, timeFinished } = addCharacterToEpisodeDto;
 
+        ValidateDuration.validateDuration(timeInit);
+        ValidateDuration.validateDuration(timeFinished);
+        ValidateDuration.validateTimeOrder(timeInit, timeFinished);
+
         let character = await this.characterRepository.findById(characterId);
-        
+
         if (character) {
             throw new BadRequestException(`Character with ID ${character.id} and named ${character.name} is already in database`);
         }

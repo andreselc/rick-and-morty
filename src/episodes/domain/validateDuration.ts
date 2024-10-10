@@ -18,4 +18,16 @@ export class ValidateDuration {
             throw new BadRequestException('Duration must be between 15:00 and 60:00');
         }
     }
+
+    static validateTimeOrder(timeInit: string, timeFinished: string): void {
+        const [initMinutes, initSeconds] = timeInit.split(':').map(Number);
+        const [finishedMinutes, finishedSeconds] = timeFinished.split(':').map(Number);
+
+        const initTotalSeconds = initMinutes * 60 + initSeconds;
+        const finishedTotalSeconds = finishedMinutes * 60 + finishedSeconds;
+
+        if (initTotalSeconds >= finishedTotalSeconds) {
+            throw new BadRequestException('timeInit must be less than timeFinished');
+        }
+    }
 }

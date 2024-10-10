@@ -1,5 +1,6 @@
 import { BadRequestException } from "@nestjs/common";
 import { PrismaClient } from "@prisma/client";
+import { CharacterToEpisode } from "src/participation/domain/characterToEpisode";
 import { IParticipationRepository } from "src/participation/domain/ports/IParticipationRepository";
 
 export class ParticipationRepository implements IParticipationRepository {
@@ -9,12 +10,42 @@ export class ParticipationRepository implements IParticipationRepository {
         this.prisma = new PrismaClient();
     }
 
-    async create(): Promise<void> {
-        // Implementation for create
+    async create(characterToEpisode: CharacterToEpisode): Promise<void> {
+        const { characterId, episodeId, timeInit, timeFinished } = characterToEpisode;
+
+        const overlappingParticipation = await this.prisma.episodeCharacter.findFirst({
+            where: {
+                character_id: characterId,
+                episode_id: episodeId,
+                OR: [
+                    {
+                        time_init: {
+                            lte: timeFinished,
+                        },
+                        time_finished: {
+                            gte: timeInit,
+                        },
+                    },
+                ],
+            },
+        });
+
+        if (overlappingParticipation) {
+            throw new BadRequestException(`Character with ID ${characterId} already appears in episode with ID ${episodeId} during the specified time.`);
+        }
+
+        await this.prisma.episodeCharacter.create({
+            data: {
+                character_id: characterId,
+                episode_id: episodeId,
+                time_init: timeInit,
+                time_finished: timeFinished,
+            },
+        });
     }
 
     async update(): Promise<void> {
-        // Implementation for update
+        
     }
 
     async delete(characterId: number, episodeId: number): Promise<void> {
