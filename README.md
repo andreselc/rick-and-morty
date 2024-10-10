@@ -1,15 +1,20 @@
-# rick-and-morty
-Desarrollo de una API REST para gestión de personajes y episodios de Rick y Morty
+# Rick & Morty API
+Desarrollo de una API REST para gestión de personajes y episodios de Rick y Morty.
 
 ## Recursos utliizados
 
-1. NodeJS para el desarrollo de la API/
+1. NodeJS para el desarrollo de la API.
 2. Prisma para la gestión de la base de datos.
 3. PostgreSQL como motor de base de datos.
 
 ## Ejecución local de proyecto
 
-1. Clonar el repositorio
+1. Clonar el repositorio utilizando el comando:
+
+```bash
+ git clone https://github.com/andreselc/rick-and-morty.git
+```
+
 2. Instalar las dependencias con `npm install`
 3. Crear un archivo `.env` en la raíz del proyecto con las siguientes variables de entorno:
 
