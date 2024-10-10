@@ -12,14 +12,14 @@ export class GetParticipationInEpisode {
     
     const query: any = {};
     if (season) query.season = season;
-    if (characterStatus) query.characterStatus = characterStatus;
-    if (episodeStatus) query.episodeStatus = episodeStatus;
+    if (characterStatus) query.character = { status: { name: characterStatus } };
+    if (episodeStatus) query.status = { name: episodeStatus };
 
     const limit: number = 5;
 
     if (!page || page <= 0) page = 1;
 
-    const totalParticipations = await this.prisma.episodeCharacter.count({ where: query });
+    const totalParticipations = await this.prisma.episode.count({ where: query });
 
     if (totalParticipations === 0) {
       return {
