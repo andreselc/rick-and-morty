@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { ParticipationController } from './infrastructure/participation.controller';
 import { MigrationService } from 'src/migrations/infrastructure/migrations.service';
 import { GetParticipationInEpisode } from './application/getParticipationsInEpisode.application';
-import { DeleteCharacterFromParticipation } from './application/deleteCharacterFromEpisode';
+import { DeleteCharacterFromParticipation } from './../participation/application/deleteCharacterFromEpisode.application';
 import { CharacterRepository } from 'src/characters/infrastructure/Repositories/characterAPIRepository';
 import { ParticipationRepository } from './infrastructure/Repository/participationRepository';
 import { CharacterRepositoryMethods } from 'src/characters/infrastructure/Repositories/characterRepositoryMethods';

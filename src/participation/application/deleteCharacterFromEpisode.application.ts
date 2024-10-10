@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { IParticipationRepository } from "../domain/ports/IParticipationRepository";
-import { IRepositoryCharacter } from "src/characters/domain/ports/IRepositoryCharacter";
+import { IRepositoryCharacter } from "../../characters/domain/ports/IRepositoryCharacter";
 
 export class DeleteCharacterFromParticipation {
 

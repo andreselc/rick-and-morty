@@ -3,7 +3,7 @@ import { ApiTags, ApiQuery, ApiBody } from '@nestjs/swagger';
 import { Response } from 'express';
 import { ParticipationInEpisodeDto } from 'src/episodes/application/Dtos/participationEpisodeDto.dto';
 import { GetParticipationInEpisode } from '../application/getParticipationsInEpisode.application';
-import { DeleteCharacterFromParticipation } from '../application/deleteCharacterFromEpisode';
+import { DeleteCharacterFromParticipation } from './../application/deleteCharacterFromEpisode.application';
 import { ParticipationRepository } from './Repository/participationRepository';
 import { CharacterRepository } from 'src/characters/infrastructure/Repositories/characterAPIRepository';
 import { CharacterRepositoryMethods } from 'src/characters/infrastructure/Repositories/characterRepositoryMethods';
