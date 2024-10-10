@@ -4,6 +4,7 @@ import { CreateEpisodeDto } from "src/episodes/application/Dtos/createEpisode.dt
 import { EpisodeDto } from "src/episodes/application/Dtos/episodeDto.dto";
 import { UpdateEpisodeDto } from "src/episodes/application/Dtos/updateEpisode.dto";
 import { IRepositoryEpisode } from "src/episodes/domain/ports/IRepositoryEpisode";
+import { ValidateDuration } from "src/episodes/domain/validateDuration";
 
 export class EpisodesRepositoryMethods implements IRepositoryEpisode {
     prisma: PrismaClient;
@@ -13,6 +14,8 @@ export class EpisodesRepositoryMethods implements IRepositoryEpisode {
     }
 
     async create(seasonKey: number , episode: CreateEpisodeDto): Promise<EpisodeDto> {
+
+        ValidateDuration.validateDuration(episode.duration);
 
         const status = await this.prisma.status.findFirst({
         where: { name: episode.status },
