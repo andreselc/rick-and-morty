@@ -76,9 +76,11 @@ export class GetParticipationInEpisode {
     }
 
     const participationDtos = participations.map(participation => ({
+      id: participation.id,
       name: participation.name,
       status: participation.status.name,
       characters: participation.characters.map(character => ({
+        id: character.character.id,
         name: character.character.name,
         status: character.character.status.name,
       })),
