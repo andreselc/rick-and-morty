@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { Expose } from 'class-transformer';
-import { IsString } from 'class-validator';
+import { IsNumber, IsString } from 'class-validator';
 
 @Injectable()
 export class CreateEpisodeDto {
+
   @Expose()
   @IsString()
   name: string ;
@@ -13,7 +14,7 @@ export class CreateEpisodeDto {
   duration: string ;
 
   @Expose()
-  @IsString()
+  @IsNumber()
   season: number;
 
   @Expose()

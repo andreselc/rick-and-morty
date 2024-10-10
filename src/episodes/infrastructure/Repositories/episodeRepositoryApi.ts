@@ -12,10 +12,29 @@ export class EpisodesRepositoryMethods implements IRepositoryEpisode {
         this.prisma = new PrismaClient();
     }
 
-    async create(key: number ,episode: CreateEpisodeDto): Promise<EpisodeDto> {
-        const value = this.findById(key);
+    async create(seasonKey: number , episode: CreateEpisodeDto): Promise<EpisodeDto> {
 
-       return 
+        const status = await this.prisma.status.findFirst({
+        where: { name: episode.status },
+        });
+
+        const newEpisode = await this.prisma.episode.create({
+            data: {
+                name: episode.name,
+                duration: episode.duration,
+                sub_category_id: seasonKey,
+                status_id: status.id,       
+                },
+                
+            });
+        let episodeOutput = new EpisodeDto();
+        episodeOutput.name = newEpisode.name;
+        episodeOutput.duration = newEpisode.duration;
+        episodeOutput.status = status.name;
+        episodeOutput.season = newEpisode.sub_category_id;
+
+    return episodeOutput;
+
     }
 
     async update(id_episode: number, updateData: UpdateEpisodeDto): Promise<void> {

@@ -7,6 +7,7 @@ import { EpisodeDto, } from '../application/Dtos/episodeDto.dto';
 import { CancellAnEpisode } from '../application/cancellAnEpisode.application';
 import { EpisodesRepositoryMethods } from './Repositories/episodeRepositoryApi';
 import { UpdateEpisodeDto } from '../application/Dtos/updateEpisode.dto';
+import { CreateEpisodeDto } from '../application/Dtos/createepisode.dto';
 
 
 @Controller()
@@ -36,8 +37,38 @@ export class EpisodesController {
   @Post("addEpisode")
   @UsePipes(new ValidationPipe({ transform: true }))
   @HttpCode(201)
-  async addEpisode(@Body() body, @Res() res: Response) {
-    
+  async addEpisode(@Body() body: CreateEpisodeDto, @Res() res: Response) {
+    try {
+      const prisma = new PrismaClient();
+
+      const seasonName = `Season ${body.season}`;
+  
+      const seasonValidation = await prisma.sub_Category.findFirst({
+        where: { name: seasonName },
+      });
+  
+      if (!seasonValidation) {
+        throw new NotFoundException('Season not found');
+      }
+  
+      const episodeValidation = await prisma.episode.findFirst({
+        where: { name: body.name, sub_category_id: seasonValidation.id },
+      });
+  
+      if (episodeValidation) {
+        throw new BadRequestException('Episode name already exists in this season');
+      }
+
+      const episode = await this.episodesRepository.create(seasonValidation.id,body);;
+  
+      return res.status(201).json({
+        statusCode: 201,
+        message: 'Episode created successfully',
+        data: episode,
+      });
+    } catch (error) {
+      throw new BadRequestException(`Something went wrong: ${error.message}`);
+    }
   }
 
   @Patch("updateEpisode/:id")
