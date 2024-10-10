@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { ParticipationController } from './participation.controller';
+import { ParticipationController } from './infrastructure/participation.controller';
 
 @Module({
   controllers: [ParticipationController]

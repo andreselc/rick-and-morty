@@ -5,7 +5,7 @@ import { CharactersModule } from './characters/characters.module';
 import { EpisodesController } from './episodes/infrastructure/episodes.controller';
 import { EpisodesModule } from './episodes/episodes.module';
 import { ParticipationModule } from './participation/participation.module';
-import { ParticipationController } from './participation/participation.controller';
+import { ParticipationController } from './participation/infrastructure/participation.controller';
 
 
 @Module({
