@@ -1,8 +1,19 @@
 import { Expose, Type } from 'class-transformer';
-import { IsString, IsNumber, ValidateNested, IsArray } from 'class-validator';
+import { IsString, ValidateNested, IsArray } from 'class-validator';
+import { CharacterParticipationDto } from './../../../characters/application/Dtos/characterParticipationDto.dto';
 
-export class ParticipationEpisodeDto {
+export class ParticipationInEpisodeDto {
   @Expose()
   @IsString()
-  nameEpisode: string;
+  name: string;
+
+  @Expose()
+  @IsString()
+  status: string;
+
+  @Expose()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => CharacterParticipationDto)
+  characters: CharacterParticipationDto[];
 }

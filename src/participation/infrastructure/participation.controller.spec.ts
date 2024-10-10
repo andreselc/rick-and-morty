@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ParticipationController } from './infrastructure/participation.controller';
+import { ParticipationController } from './participation.controller';
 
 describe('ParticipationController', () => {
   let controller: ParticipationController;
