@@ -60,9 +60,9 @@ export class ParticipationController {
       await this.addCharacterFromEpisode.execute(characterToEpisodeDto);
       return res.status(201).json({
         statusCode: 201,
-        message: `Character with ID ${characterToEpisodeDto.characterId} has been added \n 
-        to episode with ID ${characterToEpisodeDto.episodeId} \n
-        from ${characterToEpisodeDto.timeInit} to ${characterToEpisodeDto.timeFinished}`,
+        message: `Character with ID ${characterToEpisodeDto.characterId} has been added `+ 
+        `to episode with ID ${characterToEpisodeDto.episodeId} `+
+        `from ${characterToEpisodeDto.timeInit} to ${characterToEpisodeDto.timeFinished}`,
       });
     } catch (error) {
         throw new BadRequestException(error.message);
