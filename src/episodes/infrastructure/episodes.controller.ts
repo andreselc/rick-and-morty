@@ -8,6 +8,7 @@ import { CancellAnEpisode } from '../application/cancellAnEpisode.application';
 import { EpisodesRepositoryMethods } from './Repositories/episodeRepositoryApi';
 import { UpdateEpisodeDto } from '../application/Dtos/updateEpisode.dto';
 import { CreateEpisodeDto } from '../application/Dtos/createepisode.dto';
+import { ValidateDuration } from '../domain/validateDuration';
 
 
 @Controller()
@@ -78,6 +79,8 @@ export class EpisodesController {
     try {
       const prisma = new PrismaClient();
       const episode = await prisma.episode.findUnique({ where: { id } });
+
+      ValidateDuration.validateDuration(body.duration);
 
       if (!episode) {
         throw new NotFoundException('Episode not found');
