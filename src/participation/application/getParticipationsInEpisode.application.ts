@@ -22,14 +22,18 @@ export class GetParticipationInEpisode {
       }
     }
 
-    if (characterStatus) query.characters = { some: { character: { status: { name: characterStatus } } } };
     if (episodeStatus) query.status = { name: episodeStatus };
 
     const limit: number = 5;
 
     if (!page || page <= 0) page = 1;
 
-    const totalParticipations = await this.prisma.episode.count({ where: query });
+    const totalParticipations = await this.prisma.episode.count({
+      where: {
+        ...query,
+        characters: characterStatus ? { some: { character: { status: { name: characterStatus } } } } : undefined,
+      },
+    });
 
     if (totalParticipations === 0) {
       return {
@@ -47,7 +51,10 @@ export class GetParticipationInEpisode {
     const offset = (page - 1) * limit;
 
     const participations = await this.prisma.episode.findMany({
-      where: query,
+      where: {
+        ...query,
+        characters: characterStatus ? { some: { character: { status: { name: characterStatus } } } } : undefined,
+      },
       skip: offset,
       take: limit,
       include: {
