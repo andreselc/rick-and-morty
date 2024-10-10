@@ -4,6 +4,8 @@ import { Response } from 'express';
 import { PrismaClient } from '@prisma/client';
 import { GetAllEpisodes } from '../application/getAllEpisodes.application';
 import { EpisodeDto, } from '../application/Dtos/episodeDto.dto';
+import { CancellAnEpisode } from '../application/cancellAnEpisode.application';
+import { EpisodesRepositoryMethods } from './Repositories/episodeRepositoryApi';
 
 
 @Controller()
@@ -12,7 +14,11 @@ export class EpisodesController {
 
   constructor(
     private getAllEpisodes: GetAllEpisodes,
+    private cancellAnEpisode: CancellAnEpisode,
+    private episodesRepository: EpisodesRepositoryMethods,
   ) {
+    this.episodesRepository = new EpisodesRepositoryMethods();
+    this.cancellAnEpisode = new CancellAnEpisode(this.episodesRepository);
   }
 
   @Get("getAllEpisodes")
@@ -40,10 +46,23 @@ export class EpisodesController {
      
   }
 
-
   @Delete("cancelEpisode/:id")
   @HttpCode(200)
   async cancelAnEpisode(@Param("id") id:  number, @Res() res: Response) {
-   
+    if (typeof id !== 'number' || id < 1 || id > 2147483647) {
+      throw new BadRequestException(`Invalid ID: ${id}`);
+    }
+    try {
+      await this.cancellAnEpisode.execute(id);
+      return res.status(200).json({
+        statusCode: 200,
+        message: `Episode with ID ${id} has been cancelled`,
+      });
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw new BadRequestException(`Character with ID ${id} not found`);
+      }
+      throw error;
+    }
   }
 }

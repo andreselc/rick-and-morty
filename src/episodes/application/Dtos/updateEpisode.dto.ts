@@ -1,8 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
-import { IsOptional, IsString } from 'class-validator';
+import { IsNumber, IsOptional, IsString } from 'class-validator';
 
-export class CreateEpisodeDto {
+export class UpdateEpisodeDto {
 
   @ApiProperty()
   @IsOptional()
@@ -16,8 +16,8 @@ export class CreateEpisodeDto {
 
   @ApiProperty()
   @IsOptional()
-  @IsString()
-  season?: string;
+  @IsNumber()
+  season?: number;
 
   @ApiProperty()
   @IsOptional()

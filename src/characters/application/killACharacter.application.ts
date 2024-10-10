@@ -1,7 +1,5 @@
-import { Inject, Injectable, NotFoundException } from "@nestjs/common";
-import { CharacterRepository } from "../infrastructure/Repositories/characterAPIRepository";
+import { NotFoundException } from "@nestjs/common";
 import { IRepositoryCharacter } from "../domain/ports/IRepositoryCharacter";
-import { UpdateCharacterDto } from "./Dtos/updateCharacter.dtos";
 
 export class KillACharacter {
 
@@ -10,7 +8,6 @@ export class KillACharacter {
 
     async execute(characterId: number): Promise<void> {
         let character = await this.characterRepository.findById(characterId);
-        let updateCharacter = new UpdateCharacterDto();
 
         if (!character) {
             throw new NotFoundException(`Character with ID ${characterId} not found`);
