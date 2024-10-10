@@ -6,6 +6,7 @@ import { GetAllEpisodes } from '../application/getAllEpisodes.application';
 import { EpisodeDto, } from '../application/Dtos/episodeDto.dto';
 import { CancellAnEpisode } from '../application/cancellAnEpisode.application';
 import { EpisodesRepositoryMethods } from './Repositories/episodeRepositoryApi';
+import { UpdateEpisodeDto } from '../application/Dtos/updateEpisode.dto';
 
 
 @Controller()
@@ -42,8 +43,53 @@ export class EpisodesController {
   @Patch("updateEpisode/:id")
   @UsePipes(new ValidationPipe ({ transform: true}))
   @HttpCode(200)
-  async updatePartiallyAnEpisode(@Body() body, @Param("id") id: number,@Res() res: Response) {
-     
+  async updatePartiallyAnEpisode(@Body() body: UpdateEpisodeDto, @Param("id") id: number,@Res() res: Response) {
+    try {
+      const prisma = new PrismaClient();
+      const episode = await prisma.episode.findUnique({ where: { id } });
+
+      if (!episode) {
+        throw new NotFoundException('Episode not found');
+      }
+
+      const statusValidation = await prisma.status.findFirst({
+        where: { name: body.status },
+      });
+
+      if (!statusValidation) {
+        throw new NotFoundException('Status not found');
+      }
+
+      if (body.season) {
+        const seasonValidation = await prisma.sub_Category.findFirst({
+          where: { name : `Season ${body.season}`},
+        });
+
+        if (seasonValidation) {
+          throw new BadRequestException('Season number already exists');
+        }
+      }
+
+      if (body.name) {
+        const nameValidation = await prisma.episode.findFirst({
+          where: { name: body.name, id: { not: id } },
+        });
+
+        if (nameValidation) {
+          throw new BadRequestException('Episode name already exists');
+        }
+      }
+        
+
+      await this.episodesRepository.update(episode.id, body);
+      return res.status(200).json({
+        statusCode: 200,
+        message: 'Character updated successfully',
+        data: body,
+      });
+    } catch (error) {
+      throw new BadRequestException(`Something went wrong: ${error.message}`);
+    }
   }
 
   @Delete("cancelEpisode/:id")

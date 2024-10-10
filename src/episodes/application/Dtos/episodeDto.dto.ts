@@ -17,7 +17,7 @@ export class EpisodeDto {
 
   @Expose()
   @IsString()
-  season: string;
+  season: number;
 
   @Expose()
   @IsString()

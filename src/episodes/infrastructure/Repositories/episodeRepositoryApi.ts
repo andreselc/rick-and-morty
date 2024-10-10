@@ -12,13 +12,13 @@ export class EpisodesRepositoryMethods implements IRepositoryEpisode {
         this.prisma = new PrismaClient();
     }
 
-    async create(key: number ,Episode: CreateEpisodeDto): Promise<EpisodeDto> {
+    async create(key: number ,episode: CreateEpisodeDto): Promise<EpisodeDto> {
         const value = this.findById(key);
 
        return 
     }
 
-    async update(id_episode: number, updateData: EpisodeDto): Promise<void> {
+    async update(id_episode: number, updateData: UpdateEpisodeDto): Promise<void> {
         
         const existingEpisode = await this.prisma.episode.findUnique({
             where: { id: id_episode },
@@ -58,7 +58,7 @@ export class EpisodesRepositoryMethods implements IRepositoryEpisode {
                     name: "Episode not found",
                     duration: "Episode not found",
                     status: "Episode not found",
-                    season: "Episode not found",
+                    season: 0,
                     characters: [],
                 };
             }
@@ -72,7 +72,7 @@ export class EpisodesRepositoryMethods implements IRepositoryEpisode {
                     name: "Episode not found",
                     duration: "Episode not found",
                     status: "Episode not found",
-                    season: "Episode not found",
+                    season: 0,
                     characters: [],
                 };
             }

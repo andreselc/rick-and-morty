@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { MigrationService } from 'src/migrations/infrastructure/migrations.service';
 import { EpisodeDto } from './Dtos/episodeDto.dto';
 
@@ -76,6 +76,19 @@ export class GetAllEpisodes {
         const seasons = await this.prisma.sub_Category.findUnique({
           where: { id: currentEpisode.sub_category_id },
         });
+          const seasonNumberMatch = seasons.name.match(/Season (\d+)/);
+          let seasonNumber: number;
+        if (seasons && seasons.name) {
+          seasonNumber = seasonNumberMatch ? Number(seasonNumberMatch[1]) : null;
+        
+          if (seasonNumber !== null) {
+          
+          } else {
+            throw new BadRequestException('No se pudo extraer el número de la temporada');
+          }
+        } else {
+          throw new BadRequestException('No se encontró la temporada o el nombre de la temporada es inválido');
+        }
 
         const characters = await this.prisma.episodeCharacter.findMany({
           where: { episode_id: currentEpisode.id },
@@ -96,7 +109,7 @@ export class GetAllEpisodes {
         episodeDto.id = episodeValidation.id;
         episodeDto.name = episodeValidation.name;
         episodeDto.status = status.name;
-        episodeDto.season = seasons.name;
+        episodeDto.season = seasonNumber;
         episodeDto.characters = charactersArray;
         return episodeDto;
       })
