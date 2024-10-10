@@ -60,16 +60,6 @@ export class EpisodesController {
         throw new NotFoundException('Status not found');
       }
 
-      if (body.season) {
-        const seasonValidation = await prisma.sub_Category.findFirst({
-          where: { name : `Season ${body.season}`},
-        });
-
-        if (seasonValidation) {
-          throw new BadRequestException('Season number already exists');
-        }
-      }
-
       if (body.name) {
         const nameValidation = await prisma.episode.findFirst({
           where: { name: body.name, id: { not: id } },

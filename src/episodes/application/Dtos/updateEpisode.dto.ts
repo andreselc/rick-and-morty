@@ -4,22 +4,22 @@ import { IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class UpdateEpisodeDto {
 
-  @ApiProperty()
+  @Expose()
   @IsOptional()
   @IsString()
   name?: string ;
 
-  @ApiProperty()
+  @Expose()
   @IsOptional()
   @IsString()
   duration?: string ;
 
-  @ApiProperty()
+  @Expose()
   @IsOptional()
   @IsNumber()
   season?: number;
 
-  @ApiProperty()
+  @Expose()
   @IsOptional()
   @IsString()
   status?: string;

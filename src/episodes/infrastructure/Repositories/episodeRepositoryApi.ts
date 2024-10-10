@@ -29,7 +29,8 @@ export class EpisodesRepositoryMethods implements IRepositoryEpisode {
         }
 
         if (updateData.name)
-        existingEpisode.name = updateData.name;
+            existingEpisode.name = updateData.name;
+
         if(updateData.status){
             const status = await this.prisma.status.findFirst({
                 where: { name: updateData.status },
@@ -41,7 +42,12 @@ export class EpisodesRepositoryMethods implements IRepositoryEpisode {
             const numberSeason = await this.prisma.sub_Category.findFirst({
                 where: { name: realSeason },
             });
-        existingEpisode.sub_category_id = numberSeason.id;
+            if (!numberSeason) {
+                throw new NotFoundException("Season not found.");
+            }
+            else {
+                existingEpisode.sub_category_id = numberSeason.id;
+            }
         }
 
         await this.prisma.episode.update({
