@@ -19,6 +19,24 @@ export class ValidateDuration {
         }
     }
 
+    static validateDurationInCharactersParticipation(duration: string): void {
+        // La duración debe seguir el patrón mm:ss o 60:00
+        const durationPattern = /^([0-5]?[0-9]):([0-5][0-9])$|^60:00$/;
+        if (!durationPattern.test(duration)) {
+            throw new BadRequestException('Duration must be in the format mm:ss');
+        }
+
+        // Validar rango de duración
+        const [minutes, seconds] = duration.split(':').map(Number);
+        const totalSeconds = minutes * 60 + seconds;
+        const minDuration = 0 * 60; 
+        const maxDuration = 60 * 60; 
+
+        if (totalSeconds < minDuration || totalSeconds > maxDuration) {
+            throw new BadRequestException('Duration must be between 00:00 and 60:00');
+        }
+    }
+
     static validateTimeOrder(timeInit: string, timeFinished: string): void {
         const [initMinutes, initSeconds] = timeInit.split(':').map(Number);
         const [finishedMinutes, finishedSeconds] = timeFinished.split(':').map(Number);

@@ -1,12 +1,10 @@
-import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
+import { BadRequestException} from "@nestjs/common";
 import { IParticipationRepository } from "../domain/ports/IParticipationRepository";
 import { IRepositoryCharacter } from "src/characters/domain/ports/IRepositoryCharacter";
 import { CharacterToEpisodeDto } from "./Dtos/characterToEpisodeDto.dto";
 import { CharacterToEpisode } from "../domain/characterToEpisode";
 import { ValidateDuration } from "src/episodes/domain/validateDuration";
-import { EpisodesRepositoryMethods } from "src/episodes/infrastructure/Repositories/episodeRepositoryApi";
 import { IRepositoryEpisode } from "src/episodes/domain/ports/IRepositoryEpisode";
-import { PrismaClient } from "@prisma/client";
 
 export class AddCharacterFromParticipation {
 
@@ -18,15 +16,15 @@ export class AddCharacterFromParticipation {
     async execute(addCharacterToEpisodeDto: CharacterToEpisodeDto): Promise<void> {
         const { characterId, episodeId, timeInit, timeFinished } = addCharacterToEpisodeDto;
 
-        ValidateDuration.validateDuration(timeInit);
-        ValidateDuration.validateDuration(timeFinished);
+        ValidateDuration.validateDurationInCharactersParticipation(timeInit);
+        ValidateDuration.validateDurationInCharactersParticipation(timeFinished);
         ValidateDuration.validateTimeOrder(timeInit, timeFinished);
 
         let character = await this.characterRepository.findById(characterId);
         let episode = await this.episodeRepository.findById(episodeId);
 
         if (timeInit>episode.duration || timeFinished>episode.duration){
-            throw new BadRequestException(`timeInit and timeFinished must be lower than total episode's duration`);
+            throw new BadRequestException(`timeInit and/or timeFinished must be lower than total episode's duration`);
         }
             
         let participation = await this.participationRepository.getParticipation(character, episode);
