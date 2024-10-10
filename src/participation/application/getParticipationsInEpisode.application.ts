@@ -1,7 +1,5 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { MigrationService } from 'src/migrations/infrastructure/migrations.service';
-import { ParticipationInEpisodeDto } from 'src/episodes/application/Dtos/participationEpisodeDto.dto';
-import { CharacterParticipationDto } from 'src/characters/application/Dtos/characterParticipationDto.dto';
 
 @Injectable()
 export class GetParticipationInEpisode {
@@ -11,8 +9,20 @@ export class GetParticipationInEpisode {
     const { season, characterStatus, episodeStatus } = filters;
     
     const query: any = {};
-    if (season) query.season = season;
-    if (characterStatus) query.character = { status: { name: characterStatus } };
+
+    if (season) {
+      query.sub_category = { name: `Season ${season}` };
+
+      const seasonCheck = await this.prisma.sub_Category.findFirst({
+        where: { name: query.sub_category.name }
+      });
+
+      if (!seasonCheck || season <= 0) {
+        throw new NotFoundException('Season not found');
+      }
+    }
+
+    if (characterStatus) query.characters = { some: { character: { status: { name: characterStatus } } } };
     if (episodeStatus) query.status = { name: episodeStatus };
 
     const limit: number = 5;
