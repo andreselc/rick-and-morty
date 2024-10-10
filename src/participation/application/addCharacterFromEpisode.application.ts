@@ -18,18 +18,23 @@ export class AddCharacterFromParticipation {
     async execute(addCharacterToEpisodeDto: CharacterToEpisodeDto): Promise<void> {
         const { characterId, episodeId, timeInit, timeFinished } = addCharacterToEpisodeDto;
 
+        ValidateDuration.validateDuration(timeInit);
+        ValidateDuration.validateDuration(timeFinished);
+        ValidateDuration.validateTimeOrder(timeInit, timeFinished);
+
         let character = await this.characterRepository.findById(characterId);
         let episode = await this.episodeRepository.findById(episodeId);
+
+        if (timeInit>episode.duration || timeFinished>episode.duration){
+            throw new BadRequestException(`timeInit and timeFinished must be lower than total episode's duration`);
+        }
+            
         let participation = await this.participationRepository.getParticipation(character, episode);
 
         if (participation) {
             throw new BadRequestException(`Character ${character.name} with ID ${character.id} 
                 is already in episode ${episode.name}`);
         }
-
-        ValidateDuration.validateDuration(timeInit);
-        ValidateDuration.validateDuration(timeFinished);
-        ValidateDuration.validateTimeOrder(timeInit, timeFinished);
 
         const characterToEpisode = new CharacterToEpisode(characterId, episodeId, timeInit, timeFinished);
         await this.participationRepository.create(characterToEpisode);

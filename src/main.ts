@@ -37,7 +37,6 @@ async function bootstrap() {
     .setTitle("API Rick y Morty")
     .setDescription("Esta API servirá para gestionar a los personajes y episodios de Rick y Morty")
     .setVersion("1.0")
-    .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup("docs", app, document);
