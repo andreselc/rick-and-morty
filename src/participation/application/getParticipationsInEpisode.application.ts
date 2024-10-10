@@ -59,6 +59,7 @@ export class GetParticipationInEpisode {
       take: limit,
       include: {
         characters: {
+          where: characterStatus ? { character: { status: { name: characterStatus } } } : {},
           include: {
             character: {
               include: {
