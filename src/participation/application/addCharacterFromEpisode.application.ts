@@ -31,7 +31,7 @@ export class AddCharacterFromParticipation {
 
         if (participation && (timeInit < participation.timeFinished && timeFinished > participation.timeInit)) {
             throw new BadRequestException(
-                `Character ${character.name} with ID ${character.id} is already in episode ${episode.name},\n` +
+                `Character ${character.name} with ID ${character.id} is already in episode ${episode.name}, ` +
                 `and between ${participation.timeInit} and ${participation.timeFinished}`
             );
         }

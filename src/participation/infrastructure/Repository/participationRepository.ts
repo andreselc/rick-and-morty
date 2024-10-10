@@ -3,6 +3,7 @@ import { PrismaClient } from "@prisma/client";
 import { CharacterDto } from "src/characters/application/Dtos/characterDto.dto";
 import { EpisodeDto } from "src/episodes/application/Dtos/episodeDto.dto";
 import { CharacterToEpisode } from "src/participation/domain/characterToEpisode";
+import { ParticipationToUpdate } from "src/participation/domain/participationToUpdate";
 import { IParticipationRepository } from "src/participation/domain/ports/IParticipationRepository";
 
 export class ParticipationRepository implements IParticipationRepository {
@@ -46,11 +47,29 @@ export class ParticipationRepository implements IParticipationRepository {
         });
     }
 
-    async update(): Promise<void> {
-        
+    async update(participationToUpdate: ParticipationToUpdate): Promise<void> {
+
+    const participation = await this.prisma.episodeCharacter.findFirst({ 
+        where: { id_time: participationToUpdate.participationId }
+    });
+
+        if (!participation) {
+            throw new BadRequestException(`Participation with ID ${participation.id_time} not found`);
+        }
+
+        await this.prisma.episodeCharacter.update({
+            where: { episode_id_character_id_id_time: 
+                    {   id_time: participation.id_time, 
+                        episode_id: participation.episode_id, 
+                        character_id: participation.character_id } },
+            data: {
+                time_init: participationToUpdate.timeInit,
+                time_finished: participationToUpdate.timeFinished,
+            },
+        });
     }
 
-    async getParticipation(character: CharacterDto, episode: EpisodeDto): Promise<CharacterToEpisode | null> {
+    async getParticipation(character: CharacterDto, episode: EpisodeDto): Promise<CharacterToEpisode> {
         const characterInEpisode = await this.prisma.episodeCharacter.findFirst({
             where : { 
                 episode_id: episode.id,

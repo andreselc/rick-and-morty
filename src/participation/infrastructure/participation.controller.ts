@@ -10,6 +10,8 @@ import { CharacterRepositoryMethods } from 'src/characters/infrastructure/Reposi
 import { CharacterToEpisodeDto } from '../application/Dtos/characterToEpisodeDto.dto';
 import { AddCharacterFromParticipation } from '../application/addCharacterFromEpisode.application';
 import { EpisodesRepositoryMethods } from 'src/episodes/infrastructure/Repositories/episodeRepositoryApi';
+import { UpdateCharacterFromEpisode } from '../application/updateCharacterFromEpisode.application';
+import { UpdateCharacterToEpisodeDto } from '../application/Dtos/updateParticipationDto.dto';
 
 @Controller()
 @ApiTags("Participation")
@@ -21,7 +23,8 @@ export class ParticipationController {
     private participationRepository: ParticipationRepository,
     private characterRepository: CharacterRepositoryMethods,
     private addCharacterFromEpisode: AddCharacterFromParticipation,
-    private episodeRepository: EpisodesRepositoryMethods
+    private episodeRepository: EpisodesRepositoryMethods,
+    private updateCharacterFromEpisode: UpdateCharacterFromEpisode,
 
   ) {
     this.participationRepository = new ParticipationRepository();
@@ -29,6 +32,7 @@ export class ParticipationController {
     this.deleteCharacterFromEpisode = new DeleteCharacterFromParticipation(this.participationRepository, this.characterRepository);
     this.episodeRepository = new EpisodesRepositoryMethods();
     this.addCharacterFromEpisode = new AddCharacterFromParticipation(this.participationRepository,this.characterRepository,this.episodeRepository);
+    this.updateCharacterFromEpisode = new UpdateCharacterFromEpisode(this.participationRepository,this.characterRepository,this.episodeRepository);
 
   }
 
@@ -65,12 +69,26 @@ export class ParticipationController {
     }
   }
 
-    @Patch("updateParticipation/:id")
-    @UsePipes(new ValidationPipe({ transform: true }))
-    @HttpCode(200)
-    async updateParticipation(@Body() body, @Param("id") id: number, @Res() res: Response) {
-    
-    }
+  @Patch("updateParticipation/:id")
+  @UsePipes(new ValidationPipe({ transform: true }))
+  @HttpCode(200)
+  async updateParticipation(
+      @Param("id") id: number,
+      @Body() updateParticipationDto: UpdateCharacterToEpisodeDto,
+      @Res() res: Response
+  ) {
+      try {
+          updateParticipationDto.timeId= id;
+          await this.updateCharacterFromEpisode.execute(updateParticipationDto);
+          return res.status(200).json({
+              statusCode: 200,
+              message: `Participation with ID ${id} has been updated.`,
+          });
+      } catch (error) {
+          throw new BadRequestException(error.message);
+      }
+  }
+
 
     @Delete("deleteCharacterFromParticipation/:characterId/:episodeId")
     @HttpCode(200)
