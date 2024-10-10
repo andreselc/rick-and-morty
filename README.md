@@ -26,6 +26,8 @@ DATABASE_URL="postgresql://usuario:contraseña@localhost:5432/nombre_base_de_dat
 
 5. Ejecutar el comando `npm run start:dev` para iniciar el servidor en modo desarrollo.
 
+6. Acceder a la URL `http://localhost:3000/docs` para probar la API.
+
 ## Modelo de datos
 
 ![Modelo E-R](rick-and-morty-api/../images/ModeloER-RickMorty.png)
