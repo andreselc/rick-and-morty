@@ -3,7 +3,7 @@ Desarrollo de una API REST para gestión de personajes y episodios de Rick y Mor
 
 ## Recursos utliizados
 
-1. NodeJS para el desarrollo de la API.
+1. NestJS para el desarrollo de la API.
 2. Prisma para la gestión de la base de datos.
 3. PostgreSQL como motor de base de datos.
 
